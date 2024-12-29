@@ -18,6 +18,42 @@ export default function Admin() {
   useEffect(() => {
     checkAdminStatus()
     fetchData()
+
+    // Set up real-time subscriptions
+    const channel = supabase
+      .channel('admin-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'products' },
+        (payload) => {
+          console.log('Product change received:', payload)
+          fetchData()
+          toast.info('Products updated')
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'artwork' },
+        (payload) => {
+          console.log('Artwork change received:', payload)
+          fetchData()
+          toast.info('Artwork updated')
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'students' },
+        (payload) => {
+          console.log('Student change received:', payload)
+          fetchData()
+          toast.info('Students updated')
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
   }, [])
 
   const checkAdminStatus = async () => {
@@ -42,10 +78,10 @@ export default function Admin() {
   }
 
   const fetchData = async () => {
-    // Fetch products
+    // Fetch products with category info
     const { data: productsData } = await supabase
       .from('products')
-      .select('*')
+      .select('*, product_categories(*)')
       .order('created_at', { ascending: false })
     if (productsData) setProducts(productsData)
 
@@ -64,9 +100,7 @@ export default function Admin() {
   }
 
   const handleEditStudent = (student: Student) => {
-    // For now, we'll just log the edit action
     console.log('Edit student:', student)
-    // You might want to implement an edit dialog or navigate to an edit page
   }
 
   const handleDeleteStudent = async (id: string) => {
@@ -81,7 +115,7 @@ export default function Admin() {
     }
 
     toast.success("Student deleted successfully")
-    fetchData() // Refresh the data
+    fetchData()
   }
 
   if (!isAdmin) return null
