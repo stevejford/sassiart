@@ -11,7 +11,7 @@ interface PublicStudentsGalleryProps {
 }
 
 export function PublicStudentsGallery({ onArtworkSelect }: PublicStudentsGalleryProps) {
-  const { data: students, refetch } = useQuery({
+  const { data: students = [], refetch } = useQuery({
     queryKey: ['public-students'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -20,8 +20,12 @@ export function PublicStudentsGallery({ onArtworkSelect }: PublicStudentsGallery
         .eq('is_gallery_public', true)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      return data;
+      if (error) {
+        console.error('Error fetching public students:', error);
+        return [];
+      }
+
+      return data || [];
     },
   });
 

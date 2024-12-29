@@ -10,7 +10,7 @@ interface FeaturedStudentGalleryProps {
 }
 
 export function FeaturedStudentGallery({ studentId }: FeaturedStudentGalleryProps) {
-  const { data: featuredArtwork, refetch } = useQuery({
+  const { data: featuredArtwork = [], refetch } = useQuery({
     queryKey: ['featured-artwork', studentId],
     queryFn: async () => {
       let query = supabase
@@ -30,7 +30,7 @@ export function FeaturedStudentGallery({ studentId }: FeaturedStudentGalleryProp
 
       const studentIds = featuredStudents.map(student => student.id);
 
-      const { data: artwork } = await supabase
+      const { data: artwork, error } = await supabase
         .from('artwork')
         .select(`
           *,
@@ -43,6 +43,11 @@ export function FeaturedStudentGallery({ studentId }: FeaturedStudentGalleryProp
         .in('student_id', studentIds)
         .eq('is_private', false)
         .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching featured artwork:', error);
+        return [];
+      }
 
       return artwork || [];
     },
