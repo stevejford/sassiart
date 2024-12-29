@@ -52,6 +52,7 @@ export default function Admin() {
     const { data: artworkData } = await supabase
       .from('artwork')
       .select('*, student:students(name)')
+      .order('created_at', { ascending: false })
     if (artworkData) setArtwork(artworkData as ArtworkWithStudent[])
 
     // Fetch students
@@ -77,7 +78,7 @@ export default function Admin() {
 
       <div>
         <h2 className="text-xl font-semibold mb-4">Artwork</h2>
-        <ArtworkTable artwork={artwork} />
+        <ArtworkTable artwork={artwork} onUpdate={fetchData} />
       </div>
 
       <div>
