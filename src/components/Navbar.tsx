@@ -13,12 +13,18 @@ export const Navbar = () => {
   return (
     <nav className="border-b">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <h1 
-          onClick={() => navigate("/")} 
-          className="text-2xl font-serif font-bold cursor-pointer"
-        >
-          Student Art Shop
-        </h1>
+        <div className="flex flex-col items-start">
+          <h1 
+            onClick={() => navigate("/")} 
+            className="text-2xl tracking-tighter font-bold cursor-pointer transition-colors hover:text-primary"
+            style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.1em" }}
+          >
+            STUDENT ART SHOP
+          </h1>
+          <p className="text-sm text-muted-foreground" style={{ fontFamily: "'Inter', sans-serif" }}>
+            SUPPORTING YOUNG ARTISTS
+          </p>
+        </div>
         <div className="relative">
           <Button 
             variant="ghost" 
