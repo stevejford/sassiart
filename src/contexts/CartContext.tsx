@@ -33,7 +33,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         return currentItems;
       }
 
-      toast.success("Added to cart!");
+      toast.success("Added to cart");
       return [...currentItems, { product, artwork, quantity: 1 }];
     });
   };

@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ShoppingCart, ArrowLeft, CreditCard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 interface ProductInfoProps {
   product: Product;
@@ -22,7 +21,6 @@ export const ProductInfo = ({
 
   const handleAddToCart = () => {
     if (!isArtworkSelected) {
-      toast.error("Please select artwork first");
       return;
     }
     onAddToCart();
