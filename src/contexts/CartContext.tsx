@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { Product, ArtworkWithStudent } from '@/types/database';
+import { toast } from "sonner";
 
 interface CartItem {
   product: Product;
@@ -28,13 +29,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       );
 
       if (existingItem) {
-        return currentItems.map(item =>
-          item.product.id === product.id && item.artwork.id === artwork.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
+        toast.error("This item is already in your cart");
+        return currentItems;
       }
 
+      toast.success("Added to cart!");
       return [...currentItems, { product, artwork, quantity: 1 }];
     });
   };

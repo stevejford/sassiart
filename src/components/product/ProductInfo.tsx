@@ -26,7 +26,6 @@ export const ProductInfo = ({
       return;
     }
     onAddToCart();
-    toast.success("Added to cart!");
   };
 
   return (
