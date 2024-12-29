@@ -16,14 +16,20 @@ export default function AdminLogin() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    console.log("Starting login process...")
 
     try {
-      const { data: { user }, error } = await supabase.auth.signInWithPassword({
+      const { data: { user }, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
-      if (error) throw error
+      if (authError) {
+        console.error("Authentication error:", authError)
+        throw authError
+      }
+
+      console.log("User authenticated:", user)
 
       // Check if user is admin
       const { data: studentData, error: studentError } = await supabase
@@ -32,19 +38,26 @@ export default function AdminLogin() {
         .eq("email", email)
         .single()
 
-      if (studentError) throw studentError
+      if (studentError) {
+        console.error("Error fetching student data:", studentError)
+        throw studentError
+      }
+
+      console.log("Student data:", studentData)
 
       if (!studentData?.is_admin) {
+        console.log("User is not an admin")
         await supabase.auth.signOut()
         toast.error("Access denied. Admin privileges required.")
         setIsLoading(false)
         return
       }
 
+      console.log("Admin access confirmed, redirecting...")
       toast.success("Welcome back, admin!")
       navigate("/admin")
     } catch (error) {
-      console.error("Login error:", error)
+      console.error("Login process error:", error)
       toast.error("Invalid login credentials")
     } finally {
       setIsLoading(false)
