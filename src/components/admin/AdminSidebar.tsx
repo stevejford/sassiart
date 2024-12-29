@@ -13,10 +13,10 @@ import { Separator } from "@/components/ui/separator"
 
 export function AdminSidebar() {
   return (
-    <div className="pb-12 min-h-screen border-r">
+    <div className="pb-12 min-h-screen w-64 border-r border-white/10 bg-black">
       <div className="space-y-4 py-4">
         <div className="px-3 py-2">
-          <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
+          <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight text-white">
             Admin Dashboard
           </h2>
           <div className="space-y-1">
@@ -24,7 +24,7 @@ export function AdminSidebar() {
               {({ isActive }) => (
                 <Button
                   variant={isActive ? "secondary" : "ghost"}
-                  className="w-full justify-start"
+                  className="w-full justify-start hover:bg-white/10"
                 >
                   <LayoutDashboard className="mr-2 h-4 w-4" />
                   Dashboard
@@ -34,7 +34,7 @@ export function AdminSidebar() {
           </div>
         </div>
         <div className="px-3 py-2">
-          <h3 className="mb-2 px-4 text-sm font-semibold tracking-tight text-muted-foreground">
+          <h3 className="mb-2 px-4 text-sm font-semibold tracking-tight text-white/70">
             Users & Subscriptions
           </h3>
           <div className="space-y-1">
@@ -42,7 +42,7 @@ export function AdminSidebar() {
               {({ isActive }) => (
                 <Button
                   variant={isActive ? "secondary" : "ghost"}
-                  className="w-full justify-start"
+                  className="w-full justify-start hover:bg-white/10"
                 >
                   <Users className="mr-2 h-4 w-4" />
                   Students
@@ -53,7 +53,7 @@ export function AdminSidebar() {
               {({ isActive }) => (
                 <Button
                   variant={isActive ? "secondary" : "ghost"}
-                  className="w-full justify-start"
+                  className="w-full justify-start hover:bg-white/10"
                 >
                   <Bell className="mr-2 h-4 w-4" />
                   Subscriptions
@@ -63,7 +63,7 @@ export function AdminSidebar() {
           </div>
         </div>
         <div className="px-3 py-2">
-          <h3 className="mb-2 px-4 text-sm font-semibold tracking-tight text-muted-foreground">
+          <h3 className="mb-2 px-4 text-sm font-semibold tracking-tight text-white/70">
             Content Management
           </h3>
           <div className="space-y-1">
@@ -71,7 +71,7 @@ export function AdminSidebar() {
               {({ isActive }) => (
                 <Button
                   variant={isActive ? "secondary" : "ghost"}
-                  className="w-full justify-start"
+                  className="w-full justify-start hover:bg-white/10"
                 >
                   <Image className="mr-2 h-4 w-4" />
                   Gallery
@@ -82,7 +82,7 @@ export function AdminSidebar() {
               {({ isActive }) => (
                 <Button
                   variant={isActive ? "secondary" : "ghost"}
-                  className="w-full justify-start"
+                  className="w-full justify-start hover:bg-white/10"
                 >
                   <ShoppingBag className="mr-2 h-4 w-4" />
                   Products
