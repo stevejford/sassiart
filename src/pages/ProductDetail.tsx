@@ -7,10 +7,12 @@ import { Product, ArtworkWithStudent } from "@/types/database";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
+import { useCart } from "@/contexts/CartContext";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const { toast } = useToast();
+  const { addItem } = useCart();
   const [selectedArtwork, setSelectedArtwork] = useState<string | null>(null);
 
   const { data: product, isLoading: productLoading } = useQuery({
@@ -43,7 +45,7 @@ const ProductDetail = () => {
   });
 
   const handleAddToCart = () => {
-    if (!selectedArtwork) {
+    if (!selectedArtwork || !product) {
       toast({
         title: "Please select artwork",
         description: "You need to select artwork to customize this product",
@@ -52,7 +54,17 @@ const ProductDetail = () => {
       return;
     }
     
-    // TODO: Implement cart functionality
+    const artwork = artworks?.find(a => a.id === selectedArtwork);
+    if (!artwork) {
+      toast({
+        title: "Error",
+        description: "Selected artwork not found",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    addItem(product, artwork);
     toast({
       title: "Added to cart",
       description: "Your customized product has been added to the cart",
