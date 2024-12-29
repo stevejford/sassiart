@@ -5,7 +5,9 @@ import ProductDetail from "@/pages/ProductDetail"
 import Admin from "@/pages/Admin"
 import AdminLogin from "@/pages/AdminLogin"
 import AdminSignup from "@/pages/AdminSignup"
+import AdminResetPassword from "@/pages/AdminResetPassword"
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute"
+import { Toaster } from "@/components/ui/sonner"
 
 function App() {
   return (
@@ -16,6 +18,7 @@ function App() {
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/signup" element={<AdminSignup />} />
+        <Route path="/admin/reset-password" element={<AdminResetPassword />} />
         <Route
           path="/admin/*"
           element={
@@ -25,6 +28,7 @@ function App() {
           }
         />
       </Routes>
+      <Toaster />
     </Router>
   )
 }
