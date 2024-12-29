@@ -5,15 +5,26 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
-export function FeaturedStudentGallery() {
+interface FeaturedStudentGalleryProps {
+  studentId?: string;
+}
+
+export function FeaturedStudentGallery({ studentId }: FeaturedStudentGalleryProps) {
   const { data: featuredArtwork, refetch } = useQuery({
-    queryKey: ['featured-artwork'],
+    queryKey: ['featured-artwork', studentId],
     queryFn: async () => {
-      const { data: featuredStudents } = await supabase
+      let query = supabase
         .from('students')
         .select('id')
         .eq('is_featured', true)
         .eq('is_gallery_public', true);
+
+      // If studentId is provided, filter for that specific student
+      if (studentId) {
+        query = query.eq('id', studentId);
+      }
+
+      const { data: featuredStudents } = await query;
 
       if (!featuredStudents?.length) return [];
 
