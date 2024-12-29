@@ -1,4 +1,3 @@
-import { Navbar } from "@/components/Navbar";
 import { ProductGrid } from "@/components/ProductGrid";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,7 +22,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      <Navbar />
       <main className="container mx-auto px-4 py-8">
         <header className="text-center mb-12">
           <h1 className="text-4xl font-serif font-bold mb-4">Student Artwork Shop</h1>
