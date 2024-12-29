@@ -6,6 +6,7 @@ import { ProductTable } from "@/components/admin/ProductTable"
 import { ArtworkTable } from "@/components/admin/ArtworkTable"
 import { StudentTable } from "@/components/admin/StudentTable"
 import { AddProductDialog } from "@/components/admin/AddProductDialog"
+import { toast } from "sonner"
 
 export default function Admin() {
   const navigate = useNavigate()
@@ -62,6 +63,27 @@ export default function Admin() {
     if (studentsData) setStudents(studentsData)
   }
 
+  const handleEditStudent = (student: Student) => {
+    // For now, we'll just log the edit action
+    console.log('Edit student:', student)
+    // You might want to implement an edit dialog or navigate to an edit page
+  }
+
+  const handleDeleteStudent = async (id: string) => {
+    const { error } = await supabase
+      .from('students')
+      .delete()
+      .eq('id', id)
+
+    if (error) {
+      toast.error("Failed to delete student")
+      return
+    }
+
+    toast.success("Student deleted successfully")
+    fetchData() // Refresh the data
+  }
+
   if (!isAdmin) return null
 
   return (
@@ -83,7 +105,11 @@ export default function Admin() {
 
       <div>
         <h2 className="text-xl font-semibold mb-4">Students</h2>
-        <StudentTable students={students} />
+        <StudentTable 
+          students={students} 
+          onEdit={handleEditStudent}
+          onDelete={handleDeleteStudent}
+        />
       </div>
     </div>
   )
