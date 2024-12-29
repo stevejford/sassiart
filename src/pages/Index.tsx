@@ -2,12 +2,13 @@ import { ProductGrid } from "@/components/ProductGrid";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ArtworkWithStudent } from "@/types/database";
+import { toast } from "sonner";
 
 const Index = () => {
-  const { data: featuredArtwork } = useQuery({
+  const { data: featuredArtwork, error: artworkError } = useQuery({
     queryKey: ['featured-artwork'],
     queryFn: async () => {
-      const { data: artworkData, error: artworkError } = await supabase
+      const { data, error } = await supabase
         .from('artwork')
         .select(`
           *,
@@ -15,8 +16,13 @@ const Index = () => {
         `)
         .limit(3);
       
-      if (artworkError) throw artworkError;
-      return artworkData as ArtworkWithStudent[];
+      if (error) {
+        console.error("Supabase error:", error);
+        toast.error("Failed to load featured artwork");
+        return [];
+      }
+      
+      return data as ArtworkWithStudent[];
     },
   });
 
@@ -29,6 +35,12 @@ const Index = () => {
             Support young artists by purchasing their artwork on custom products
           </p>
         </header>
+
+        {artworkError && (
+          <div className="text-center text-red-500 mb-8">
+            Failed to load featured artwork. Please try again later.
+          </div>
+        )}
 
         {featuredArtwork && featuredArtwork.length > 0 && (
           <section className="mb-16">
