@@ -7,12 +7,13 @@ import { FeaturedStudentGallery } from "@/components/gallery/FeaturedStudentGall
 import { PublicStudentsGallery } from "@/components/gallery/PublicStudentsGallery";
 import { NewsletterSubscription } from "@/components/NewsletterSubscription";
 import { Button } from "@/components/ui/button";
-import { Users, Image } from "lucide-react";
+import { Users } from "lucide-react";
 
 const Index = () => {
-  const { data: featuredStudents } = useQuery({
+  const { data: featuredStudent } = useQuery({
     queryKey: ['featured-students'],
     queryFn: async () => {
+      console.log('Fetching featured students');
       const { data, error } = await supabase
         .from('students')
         .select('id, name')
@@ -23,10 +24,12 @@ const Index = () => {
       
       if (error) {
         console.error("Error fetching featured students:", error);
+        toast.error("Failed to load featured student");
         return null;
       }
       
-      return data[0];
+      console.log('Featured student data:', data);
+      return data?.[0] || null;
     },
   });
 
@@ -48,18 +51,18 @@ const Index = () => {
           </div>
         </header>
 
-        {featuredStudents && (
+        {featuredStudent && (
           <section>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-serif font-bold">Student of the Week: {featuredStudents.name}</h2>
+              <h2 className="text-2xl font-serif font-bold">Student of the Week: {featuredStudent.name}</h2>
               <Link 
-                to={`/gallery/${featuredStudents.name.toLowerCase().replace(/\s+/g, '-')}`}
+                to={`/gallery/${featuredStudent.name.toLowerCase().replace(/\s+/g, '-')}`}
                 className="text-primary hover:underline"
               >
                 View Full Gallery →
               </Link>
             </div>
-            <FeaturedStudentGallery studentId={featuredStudents.id} />
+            <FeaturedStudentGallery studentId={featuredStudent.id} />
           </section>
         )}
 
