@@ -19,8 +19,13 @@ interface StudentTableProps {
 }
 
 export const StudentTable = ({ students, onEdit, onDelete }: StudentTableProps) => {
+  const formatGalleryUrl = (name: string) => {
+    return name.toLowerCase().replace(/\s+/g, '-')
+  }
+
   const handleCopyGalleryLink = async (student: Student) => {
-    const url = `${window.location.origin}/gallery/${student.id}`
+    const formattedName = formatGalleryUrl(student.name)
+    const url = `${window.location.origin}/gallery/${formattedName}`
     await navigator.clipboard.writeText(url)
     toast.success("Gallery link copied to clipboard!")
   }
@@ -44,7 +49,7 @@ export const StudentTable = ({ students, onEdit, onDelete }: StudentTableProps) 
             <TableCell>{student.is_admin ? 'Admin' : 'Student'}</TableCell>
             <TableCell>
               <div className="flex space-x-2">
-                <Link to={`/gallery/${student.id}`}>
+                <Link to={`/gallery/${formatGalleryUrl(student.name)}`}>
                   <Button variant="outline" size="icon" title="View Gallery">
                     <Eye className="h-4 w-4" />
                   </Button>
