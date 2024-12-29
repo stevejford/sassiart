@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { Toaster } from "@/components/ui/sonner"
 import { CartProvider } from "@/contexts/CartContext"
-import Navbar from "@/components/Navbar"
+import { Navbar } from "@/components/Navbar"
 import Index from "@/pages/Index"
 import Cart from "@/pages/Cart"
 import ProductDetail from "@/pages/ProductDetail"

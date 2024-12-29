@@ -3,6 +3,7 @@ export interface Student {
   name: string;
   email: string;
   created_at: string;
+  is_admin: boolean | null;
 }
 
 export interface Artwork {
