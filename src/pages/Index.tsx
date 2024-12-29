@@ -8,13 +8,13 @@ const Index = () => {
   const { data: featuredArtwork } = useQuery({
     queryKey: ['featured-artwork'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: artworkData, error: artworkError } = await supabase
         .from('artwork')
-        .select('*, students(name)')
+        .select('*, student:students(name)')
         .limit(3);
       
-      if (error) throw error;
-      return data as (Artwork & { students: { name: string } })[];
+      if (artworkError) throw artworkError;
+      return artworkData as (Artwork & { student: { name: string } })[];
     },
   });
 
@@ -42,7 +42,7 @@ const Index = () => {
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-4">
                     <h3 className="font-medium">{artwork.title}</h3>
-                    <p className="text-sm">by {artwork.students.name}</p>
+                    <p className="text-sm">by {artwork.student.name}</p>
                   </div>
                 </div>
               ))}

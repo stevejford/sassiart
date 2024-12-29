@@ -9,8 +9,7 @@ export const ProductGrid = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('products')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('*');
       
       if (error) throw error;
       return data as Product[];
