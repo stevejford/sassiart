@@ -15,12 +15,12 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Pencil, Trash2 } from "lucide-react"
+import { Textarea } from "@/components/ui/textarea"
+import { Pencil, Trash2, Image as ImageIcon } from "lucide-react"
 
 interface ArtworkTableProps {
   artwork: ArtworkWithStudent[]
@@ -31,6 +31,7 @@ export const ArtworkTable = ({ artwork, onUpdate }: ArtworkTableProps) => {
   const { toast } = useToast()
   const [selectedArtwork, setSelectedArtwork] = useState<ArtworkWithStudent | null>(null)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [editForm, setEditForm] = useState({
     title: "",
     description: "",
@@ -46,6 +47,8 @@ export const ArtworkTable = ({ artwork, onUpdate }: ArtworkTableProps) => {
   }
 
   const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this artwork?")) return
+
     const { error } = await supabase
       .from("artwork")
       .delete()
@@ -67,32 +70,62 @@ export const ArtworkTable = ({ artwork, onUpdate }: ArtworkTableProps) => {
     onUpdate()
   }
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0])
+    }
+  }
+
   const handleUpdate = async () => {
     if (!selectedArtwork) return
 
-    const { error } = await supabase
-      .from("artwork")
-      .update({
-        title: editForm.title,
-        description: editForm.description,
-      })
-      .eq("id", selectedArtwork.id)
+    try {
+      let imageUrl = selectedArtwork.image_url
 
-    if (error) {
+      if (selectedFile) {
+        // Upload new image
+        const fileExt = selectedFile.name.split('.').pop()
+        const filePath = `${crypto.randomUUID()}.${fileExt}`
+        
+        const { error: uploadError } = await supabase.storage
+          .from('products')
+          .upload(filePath, selectedFile)
+
+        if (uploadError) throw uploadError
+
+        const { data: urlData } = supabase.storage
+          .from('products')
+          .getPublicUrl(filePath)
+
+        imageUrl = urlData.publicUrl
+      }
+
+      const { error } = await supabase
+        .from("artwork")
+        .update({
+          title: editForm.title,
+          description: editForm.description,
+          image_url: imageUrl,
+        })
+        .eq("id", selectedArtwork.id)
+
+      if (error) throw error
+
+      toast({
+        title: "Success",
+        description: "Artwork updated successfully",
+      })
+      setIsEditDialogOpen(false)
+      setSelectedFile(null)
+      onUpdate()
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
         description: "Failed to update artwork",
       })
-      return
+      console.error(error)
     }
-
-    toast({
-      title: "Success",
-      description: "Artwork updated successfully",
-    })
-    setIsEditDialogOpen(false)
-    onUpdate()
   }
 
   return (
@@ -100,6 +133,7 @@ export const ArtworkTable = ({ artwork, onUpdate }: ArtworkTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>Image</TableHead>
             <TableHead>Title</TableHead>
             <TableHead>Student</TableHead>
             <TableHead>Description</TableHead>
@@ -109,6 +143,13 @@ export const ArtworkTable = ({ artwork, onUpdate }: ArtworkTableProps) => {
         <TableBody>
           {artwork.map((art) => (
             <TableRow key={art.id}>
+              <TableCell>
+                <img
+                  src={art.image_url}
+                  alt={art.title}
+                  className="w-16 h-16 object-cover rounded"
+                />
+              </TableCell>
               <TableCell>{art.title}</TableCell>
               <TableCell>{art.student.name}</TableCell>
               <TableCell>{art.description}</TableCell>
@@ -151,7 +192,7 @@ export const ArtworkTable = ({ artwork, onUpdate }: ArtworkTableProps) => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
-              <Input
+              <Textarea
                 id="description"
                 value={editForm.description}
                 onChange={(e) =>
@@ -159,7 +200,27 @@ export const ArtworkTable = ({ artwork, onUpdate }: ArtworkTableProps) => {
                 }
               />
             </div>
-            <Button onClick={handleUpdate}>Save Changes</Button>
+            <div className="space-y-2">
+              <Label htmlFor="image">Image</Label>
+              {selectedArtwork && (
+                <div className="mb-2">
+                  <img
+                    src={selectedArtwork.image_url}
+                    alt={selectedArtwork.title}
+                    className="w-32 h-32 object-cover rounded"
+                  />
+                </div>
+              )}
+              <Input
+                id="image"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+              />
+            </div>
+            <Button onClick={handleUpdate} className="w-full">
+              Save Changes
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
