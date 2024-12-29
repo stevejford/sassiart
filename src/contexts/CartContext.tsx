@@ -24,7 +24,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
 
   const addItem = (product: Product, artwork: ArtworkWithStudent) => {
-    console.log('CartContext: Attempting to add item to cart:', { product: product.name, artwork: artwork.title });
+    console.log('CartContext: Attempting to add item to cart:', { 
+      product: product.name, 
+      artwork: artwork.title 
+    });
     
     setItems((currentItems) => {
       const existingItem = currentItems.find(

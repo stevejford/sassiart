@@ -1,92 +1,59 @@
-import { ProductGrid } from "@/components/ProductGrid";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { Link } from "react-router-dom";
-import { FeaturedStudentGallery } from "@/components/gallery/FeaturedStudentGallery";
+import { Product } from "@/types/database";
+import { ProductGrid } from "@/components/ProductGrid";
 import { PublicStudentsGallery } from "@/components/gallery/PublicStudentsGallery";
-import { NewsletterSubscription } from "@/components/NewsletterSubscription";
-import { Button } from "@/components/ui/button";
-import { Users } from "lucide-react";
+import { FeaturedStudentGallery } from "@/components/gallery/FeaturedStudentGallery";
 
-const Index = () => {
-  const { data: featuredStudent } = useQuery({
-    queryKey: ['featured-students'],
+export default function Index() {
+  console.log('Shop Index: Initializing component');
+
+  const { data: products, isLoading, error } = useQuery({
+    queryKey: ['products'],
     queryFn: async () => {
-      console.log('Fetching featured students');
+      console.log('Shop Index: Fetching products');
       const { data, error } = await supabase
-        .from('students')
-        .select('id, name')
-        .eq('is_featured', true)
-        .gt('featured_until', new Date().toISOString())
-        .order('featured_until', { ascending: false })
-        .limit(1);
-      
+        .from('products')
+        .select('*, product_categories(*)')
+        .order('total_sales', { ascending: false });
+
       if (error) {
-        console.error("Error fetching featured students:", error);
-        toast.error("Failed to load featured student");
-        return null;
+        console.error('Shop Index: Error fetching products:', error);
+        throw error;
       }
-      
-      console.log('Featured student data:', data);
-      return data?.[0] || null;
+
+      console.log('Shop Index: Successfully fetched products:', data?.length || 0, 'items');
+      return data as Product[];
     },
   });
 
+  if (error) {
+    console.error('Shop Index: Rendering error state:', error);
+    return <div>Error loading products</div>;
+  }
+
+  if (isLoading) {
+    console.log('Shop Index: Rendering loading state');
+    return <div>Loading...</div>;
+  }
+
+  console.log('Shop Index: Rendering products grid with', products?.length || 0, 'products');
   return (
-    <div className="min-h-screen">
-      <main className="container mx-auto px-4 py-8 space-y-16">
-        <header className="text-center mb-12">
-          <h1 className="text-4xl font-serif font-bold mb-4">Student Artwork Shop</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Support young artists by purchasing their artwork on custom products
-          </p>
-          <div className="flex justify-center gap-4 mt-6">
-            <Link to="/gallery">
-              <Button variant="outline" className="gap-2">
-                <Users className="w-4 h-4" />
-                Browse Student Galleries
-              </Button>
-            </Link>
-          </div>
-        </header>
+    <div className="container mx-auto px-4 py-8 space-y-12">
+      <section>
+        <h2 className="text-3xl font-serif font-bold mb-8">Featured Artists</h2>
+        <FeaturedStudentGallery />
+      </section>
 
-        {featuredStudent && (
-          <section>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-serif font-bold">Student of the Week: {featuredStudent.name}</h2>
-              <Link 
-                to={`/gallery/${featuredStudent.name.toLowerCase().replace(/\s+/g, '-')}`}
-                className="text-primary hover:underline"
-              >
-                View Full Gallery →
-              </Link>
-            </div>
-            <FeaturedStudentGallery studentId={featuredStudent.id} />
-          </section>
-        )}
+      <section>
+        <h2 className="text-3xl font-serif font-bold mb-8">Shop Our Products</h2>
+        <ProductGrid products={products || []} />
+      </section>
 
-        <section>
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-serif font-bold">Featured Student Galleries</h2>
-            <Link to="/gallery" className="text-primary hover:underline">
-              View All Galleries →
-            </Link>
-          </div>
-          <PublicStudentsGallery />
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-serif font-bold mb-6">Our Products</h2>
-          <ProductGrid />
-        </section>
-
-        <section className="bg-muted rounded-lg p-8">
-          <NewsletterSubscription />
-        </section>
-      </main>
+      <section>
+        <h2 className="text-3xl font-serif font-bold mb-8">Student Galleries</h2>
+        <PublicStudentsGallery />
+      </section>
     </div>
   );
-};
-
-export default Index;
+}
