@@ -17,10 +17,13 @@ export default function AdminSignup() {
     setIsLoading(true)
 
     try {
-      // Create auth user
+      // Create auth user with redirect URL
       const { data: { user }, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: 'https://preview--artify-your-gear.lovable.app/admin/login'
+        }
       })
 
       if (signUpError) throw signUpError
