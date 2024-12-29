@@ -14,12 +14,12 @@ export const ProductPreview = ({
   return (
     <div className="sticky top-24">
       <div className="aspect-square overflow-hidden rounded-lg border bg-white relative">
-        <div className="w-3/4 h-3/4 mx-auto my-auto relative">
+        <div className="absolute inset-0 flex items-center justify-center">
           {/* Base product image */}
           <img
             src={product.image_url}
             alt={product.name}
-            className="w-full h-full object-contain p-4"
+            className="w-3/4 h-3/4 object-contain"
           />
           
           {/* Product info overlay */}
