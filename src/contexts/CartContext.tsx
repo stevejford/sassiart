@@ -20,6 +20,7 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  console.log('CartProvider: Initializing');
   const [items, setItems] = useState<CartItem[]>([]);
 
   const addItem = (product: Product, artwork: ArtworkWithStudent) => {
@@ -43,12 +44,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const removeItem = (productId: string, artworkId: string) => {
+    console.log('CartContext: Removing item from cart:', { productId, artworkId });
     setItems(items.filter(
       item => !(item.product.id === productId && item.artwork.id === artworkId)
     ));
   };
 
   const updateQuantity = (productId: string, artworkId: string, quantity: number) => {
+    console.log('CartContext: Updating item quantity:', { productId, artworkId, quantity });
     setItems(items.map(item =>
       item.product.id === productId && item.artwork.id === artworkId
         ? { ...item, quantity }
@@ -57,6 +60,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const clearCart = () => {
+    console.log('CartContext: Clearing cart');
     setItems([]);
   };
 
@@ -65,15 +69,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     0
   );
 
+  const value = {
+    items,
+    addItem,
+    removeItem,
+    updateQuantity,
+    clearCart,
+    total
+  };
+
+  console.log('CartProvider: Rendering with', items.length, 'items');
   return (
-    <CartContext.Provider value={{
-      items,
-      addItem,
-      removeItem,
-      updateQuantity,
-      clearCart,
-      total
-    }}>
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   );
@@ -82,6 +89,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 export function useCart() {
   const context = useContext(CartContext);
   if (context === undefined) {
+    console.error('useCart: Must be used within a CartProvider');
     throw new Error('useCart must be used within a CartProvider');
   }
   return context;

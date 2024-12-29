@@ -6,7 +6,14 @@ import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { Routes } from "./Routes";
 import "./App.css";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 function App() {
   return (
