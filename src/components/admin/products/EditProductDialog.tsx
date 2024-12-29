@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -24,13 +24,27 @@ export function EditProductDialog({
   onUpdate,
 }: EditProductDialogProps) {
   const [form, setForm] = useState({
-    name: product?.name || "",
-    description: product?.description || "",
-    base_price: product?.base_price || 0,
-    category: product?.category || "",
-    image_url: product?.image_url || "",
-    is_popular: product?.is_popular || false,
+    name: "",
+    description: "",
+    base_price: 0,
+    category: "",
+    image_url: "",
+    is_popular: false,
   })
+
+  // Update form when product changes or dialog opens
+  useEffect(() => {
+    if (product && isOpen) {
+      setForm({
+        name: product.name,
+        description: product.description || "",
+        base_price: product.base_price,
+        category: product.category,
+        image_url: product.image_url,
+        is_popular: product.is_popular,
+      })
+    }
+  }, [product, isOpen])
 
   const handleImageUpload = (url: string) => {
     setForm(prev => ({ ...prev, image_url: url }))

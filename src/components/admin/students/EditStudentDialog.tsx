@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -21,9 +21,19 @@ export function EditStudentDialog({
   onStudentUpdated,
 }: EditStudentDialogProps) {
   const [form, setForm] = useState({
-    name: student?.name || "",
-    email: student?.email || "",
+    name: "",
+    email: "",
   })
+
+  // Update form when student changes or dialog opens
+  useEffect(() => {
+    if (student && isOpen) {
+      setForm({
+        name: student.name,
+        email: student.email,
+      })
+    }
+  }, [student, isOpen])
 
   const handleEdit = async () => {
     if (!student) return

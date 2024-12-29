@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -24,11 +24,23 @@ export function EditArtworkDialog({
   onUpdate,
 }: EditArtworkDialogProps) {
   const [form, setForm] = useState({
-    title: artwork?.title || "",
-    description: artwork?.description || "",
-    image_url: artwork?.image_url || "",
-    is_private: artwork?.is_private || false,
+    title: "",
+    description: "",
+    image_url: "",
+    is_private: false,
   })
+
+  // Update form when artwork changes or dialog opens
+  useEffect(() => {
+    if (artwork && isOpen) {
+      setForm({
+        title: artwork.title,
+        description: artwork.description || "",
+        image_url: artwork.image_url,
+        is_private: artwork.is_private,
+      })
+    }
+  }, [artwork, isOpen])
 
   const handleImageUpload = (url: string) => {
     setForm(prev => ({ ...prev, image_url: url }))
