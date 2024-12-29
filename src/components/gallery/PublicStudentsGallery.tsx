@@ -2,9 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Link } from "react-router-dom";
-import { User, Image } from "lucide-react";
+import { User } from "lucide-react";
 
-export function PublicStudentsGallery() {
+interface PublicStudentsGalleryProps {
+  onArtworkSelect?: (artworkId: string) => void;
+}
+
+export function PublicStudentsGallery({ onArtworkSelect }: PublicStudentsGalleryProps) {
   const { data: students } = useQuery({
     queryKey: ['public-students'],
     queryFn: async () => {
@@ -27,8 +31,16 @@ export function PublicStudentsGallery() {
         {students.map((student) => (
           <CarouselItem key={student.id} className="md:basis-1/3 lg:basis-1/4">
             <Link 
-              to={`/gallery/${student.name.toLowerCase().replace(/\s+/g, '-')}`}
+              to={onArtworkSelect ? `#` : `/gallery/${student.name.toLowerCase().replace(/\s+/g, '-')}`}
               className="block group"
+              onClick={(e) => {
+                if (onArtworkSelect) {
+                  e.preventDefault();
+                  // Here we would typically fetch the student's artwork and show a selection UI
+                  // For now, we'll just pass a dummy artwork ID
+                  onArtworkSelect(student.id);
+                }
+              }}
             >
               <div className="relative aspect-square bg-muted rounded-lg overflow-hidden">
                 {student.photo_url ? (
@@ -47,7 +59,9 @@ export function PublicStudentsGallery() {
                   {student.about_text && (
                     <p className="text-sm line-clamp-2">{student.about_text}</p>
                   )}
-                  <p className="text-sm mt-1">View Gallery →</p>
+                  <p className="text-sm mt-1">
+                    {onArtworkSelect ? 'Select Artwork →' : 'View Gallery →'}
+                  </p>
                 </div>
               </div>
             </Link>

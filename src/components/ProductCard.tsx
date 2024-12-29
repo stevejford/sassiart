@@ -1,53 +1,40 @@
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Product } from "@/types/database";
+import { Button } from "@/components/ui/button";
 
 interface ProductCardProps {
   product: Product;
-  onClick?: () => void; // Make onClick optional
+  onCustomize?: () => void;
+  className?: string;
 }
 
-export const ProductCard = ({ product, onClick }: ProductCardProps) => {
-  const navigate = useNavigate();
-
-  // Use onClick if provided, otherwise use default navigation
-  const handleClick = () => {
-    if (onClick) {
-      onClick();
-    } else {
-      navigate(`/product/${product.id}`);
-    }
-  };
-
+export function ProductCard({ product, onCustomize, className = "" }: ProductCardProps) {
   return (
-    <Card className="overflow-hidden group animate-fadeIn">
-      <CardContent className="p-0">
-        <div className="aspect-square overflow-hidden">
-          <img
-            src={product.image_url}
-            alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        </div>
-      </CardContent>
-      <CardFooter className="flex flex-col items-start gap-2 p-4">
-        <div className="flex flex-col">
-          <h3 className="font-serif text-lg font-medium">{product.name}</h3>
-          <p className="text-sm text-muted-foreground">
-            {product.product_categories?.name || product.category}
-          </p>
-        </div>
-        <div className="flex items-center justify-between w-full">
-          <span className="font-medium">${product.base_price.toFixed(2)}</span>
-          <Button 
-            variant="secondary"
-            onClick={handleClick}
-          >
+    <div className={`group relative rounded-lg border p-4 space-y-4 ${className}`}>
+      <div className="aspect-square overflow-hidden rounded-lg bg-muted">
+        <img
+          src={product.image_url}
+          alt={product.name}
+          className="h-full w-full object-cover transition-transform group-hover:scale-105"
+        />
+      </div>
+      <div>
+        <h3 className="font-medium">{product.name}</h3>
+        <p className="text-sm text-muted-foreground">${product.base_price.toFixed(2)}</p>
+      </div>
+      <Button 
+        className="w-full"
+        asChild={!onCustomize}
+        onClick={onCustomize}
+      >
+        {onCustomize ? (
+          <span>Customize</span>
+        ) : (
+          <Link to={`/gallery?productId=${product.id}`}>
             Customize
-          </Button>
-        </div>
-      </CardFooter>
-    </Card>
+          </Link>
+        )}
+      </Button>
+    </div>
   );
-};
+}
