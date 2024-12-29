@@ -6,27 +6,40 @@ import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 
 interface FeaturedStudentGalleryProps {
-  studentId: string;
+  studentId?: string;
 }
 
 export function FeaturedStudentGallery({ studentId }: FeaturedStudentGalleryProps) {
   const { data: artwork } = useQuery({
     queryKey: ['featured-student-artwork', studentId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const query = supabase
         .from('artwork')
         .select(`
           *,
           student:students(name)
         `)
-        .eq('student_id', studentId)
         .eq('is_private', false)
         .order('created_at', { ascending: false });
 
+      // If studentId is provided, filter by that student
+      if (studentId) {
+        query.eq('student_id', studentId);
+      } else {
+        // Otherwise, show artwork from featured students
+        query.in('student_id', 
+          supabase
+            .from('students')
+            .select('id')
+            .eq('is_featured', true)
+        );
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
       return data;
     },
-    enabled: !!studentId,
+    enabled: true,
   });
 
   if (!artwork?.length) return null;
