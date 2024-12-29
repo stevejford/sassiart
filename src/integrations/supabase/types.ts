@@ -103,6 +103,8 @@ export type Database = {
           customer_email: string
           customer_name: string
           id: string
+          notification_email: string | null
+          order_status: string | null
           status: string
           total_amount: number
         }
@@ -112,6 +114,8 @@ export type Database = {
           customer_email: string
           customer_name: string
           id?: string
+          notification_email?: string | null
+          order_status?: string | null
           status?: string
           total_amount: number
         }
@@ -121,6 +125,8 @@ export type Database = {
           customer_email?: string
           customer_name?: string
           id?: string
+          notification_email?: string | null
+          order_status?: string | null
           status?: string
           total_amount?: number
         }
@@ -211,6 +217,41 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          student_id: string | null
+          subscribe_to_gallery: boolean | null
+          subscribe_to_newsletter: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          student_id?: string | null
+          subscribe_to_gallery?: boolean | null
+          subscribe_to_newsletter?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          student_id?: string | null
+          subscribe_to_gallery?: boolean | null
+          subscribe_to_newsletter?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
