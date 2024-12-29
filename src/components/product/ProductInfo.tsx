@@ -16,7 +16,7 @@ export const ProductInfo = ({
   isFeatured = false 
 }: ProductInfoProps) => {
   return (
-    <div className="space-y-6">
+    <div className={`space-y-6 ${isFeatured ? 'mt-8' : ''}`}>
       <div>
         <h1 className="text-4xl font-serif font-bold mb-2">{product.name}</h1>
         <p className="text-2xl font-medium text-primary">${product.base_price.toFixed(2)}</p>

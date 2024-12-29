@@ -31,7 +31,7 @@ export const ArtworkSelector = ({
   }
 
   return (
-    <div>
+    <div className={isFeatured ? 'mt-8' : ''}>
       <h2 className="text-lg font-serif font-semibold mb-4">Select Artwork</h2>
       <ScrollArea className="h-[400px] pr-4">
         <div className="grid grid-cols-2 gap-4">
