@@ -13,6 +13,8 @@ export function FeaturedStudentGallery({ studentId }: FeaturedStudentGalleryProp
   const { data: featuredArtwork = [], refetch } = useQuery({
     queryKey: ['featured-artwork', studentId],
     queryFn: async () => {
+      console.log('Fetching featured artwork for studentId:', studentId || 'all students');
+      
       let query = supabase
         .from('students')
         .select('id')
@@ -21,16 +23,28 @@ export function FeaturedStudentGallery({ studentId }: FeaturedStudentGalleryProp
 
       // If studentId is provided, filter for that specific student
       if (studentId) {
+        console.log('Filtering for specific student:', studentId);
         query = query.eq('id', studentId);
       }
 
-      const { data: featuredStudents } = await query;
+      const { data: featuredStudents, error: studentsError } = await query;
 
-      if (!featuredStudents?.length) return [];
+      if (studentsError) {
+        console.error('Error fetching featured students:', studentsError);
+        return [];
+      }
+
+      console.log('Found featured students:', featuredStudents?.length || 0);
+
+      if (!featuredStudents?.length) {
+        console.log('No featured students found');
+        return [];
+      }
 
       const studentIds = featuredStudents.map(student => student.id);
+      console.log('Fetching artwork for student IDs:', studentIds);
 
-      const { data: artwork, error } = await supabase
+      const { data: artwork, error: artworkError } = await supabase
         .from('artwork')
         .select(`
           *,
@@ -44,16 +58,18 @@ export function FeaturedStudentGallery({ studentId }: FeaturedStudentGalleryProp
         .eq('is_private', false)
         .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching featured artwork:', error);
+      if (artworkError) {
+        console.error('Error fetching featured artwork:', artworkError);
         return [];
       }
 
+      console.log('Found featured artwork:', artwork?.length || 0);
       return artwork || [];
     },
   });
 
   useEffect(() => {
+    console.log('Setting up realtime subscription for featured gallery');
     const channel = supabase
       .channel('featured-gallery-changes')
       .on(
@@ -73,12 +89,17 @@ export function FeaturedStudentGallery({ studentId }: FeaturedStudentGalleryProp
       .subscribe();
 
     return () => {
+      console.log('Cleaning up featured gallery subscription');
       supabase.removeChannel(channel);
     };
   }, [refetch]);
 
-  if (!featuredArtwork?.length) return null;
+  if (!featuredArtwork?.length) {
+    console.log('No featured artwork to display');
+    return null;
+  }
 
+  console.log('Rendering featured artwork gallery:', featuredArtwork.length, 'items');
   return (
     <Carousel className="w-full">
       <CarouselContent>

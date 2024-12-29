@@ -14,6 +14,7 @@ export function PublicStudentsGallery({ onArtworkSelect }: PublicStudentsGallery
   const { data: students = [], refetch } = useQuery({
     queryKey: ['public-students'],
     queryFn: async () => {
+      console.log('Fetching public students');
       const { data, error } = await supabase
         .from('students')
         .select('*')
@@ -25,11 +26,13 @@ export function PublicStudentsGallery({ onArtworkSelect }: PublicStudentsGallery
         return [];
       }
 
+      console.log('Found public students:', data?.length || 0);
       return data || [];
     },
   });
 
   useEffect(() => {
+    console.log('Setting up realtime subscription for public galleries');
     const channel = supabase
       .channel('public-gallery-changes')
       .on(
@@ -49,12 +52,17 @@ export function PublicStudentsGallery({ onArtworkSelect }: PublicStudentsGallery
       .subscribe();
 
     return () => {
+      console.log('Cleaning up public gallery subscription');
       supabase.removeChannel(channel);
     };
   }, [refetch]);
 
-  if (!students?.length) return null;
+  if (!students?.length) {
+    console.log('No public students to display');
+    return null;
+  }
 
+  console.log('Rendering public students gallery:', students.length, 'students');
   return (
     <Carousel className="w-full">
       <CarouselContent>
@@ -65,6 +73,7 @@ export function PublicStudentsGallery({ onArtworkSelect }: PublicStudentsGallery
               className="block group"
               onClick={(e) => {
                 if (onArtworkSelect) {
+                  console.log('Artwork selected for student:', student.id);
                   e.preventDefault();
                   onArtworkSelect(student.id);
                 }
@@ -76,6 +85,10 @@ export function PublicStudentsGallery({ onArtworkSelect }: PublicStudentsGallery
                     src={student.photo_url} 
                     alt={student.name}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    onError={(e) => {
+                      console.error('Error loading student photo:', student.photo_url);
+                      e.currentTarget.style.display = 'none';
+                    }}
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
