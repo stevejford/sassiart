@@ -13,31 +13,43 @@ export function FeaturedStudentGallery({ studentId }: FeaturedStudentGalleryProp
   const { data: artwork } = useQuery({
     queryKey: ['featured-student-artwork', studentId],
     queryFn: async () => {
-      const query = supabase
-        .from('artwork')
-        .select(`
-          *,
-          student:students(name)
-        `)
-        .eq('is_private', false)
-        .order('created_at', { ascending: false });
-
-      // If studentId is provided, filter by that student
       if (studentId) {
-        query.eq('student_id', studentId);
-      } else {
-        // Otherwise, show artwork from featured students
-        query.in('student_id', 
-          supabase
-            .from('students')
-            .select('id')
-            .eq('is_featured', true)
-        );
-      }
+        // If studentId is provided, get artwork for that specific student
+        const { data, error } = await supabase
+          .from('artwork')
+          .select(`
+            *,
+            student:students(name)
+          `)
+          .eq('student_id', studentId)
+          .eq('is_private', false)
+          .order('created_at', { ascending: false });
 
-      const { data, error } = await query;
-      if (error) throw error;
-      return data;
+        if (error) throw error;
+        return data;
+      } else {
+        // Otherwise, first get featured student IDs
+        const { data: featuredStudents, error: studentsError } = await supabase
+          .from('students')
+          .select('id')
+          .eq('is_featured', true);
+
+        if (studentsError) throw studentsError;
+        
+        // Then get artwork from those students
+        const { data, error } = await supabase
+          .from('artwork')
+          .select(`
+            *,
+            student:students(name)
+          `)
+          .in('student_id', featuredStudents.map(student => student.id))
+          .eq('is_private', false)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        return data;
+      }
     },
     enabled: true,
   });
