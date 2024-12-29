@@ -23,21 +23,39 @@ export const ProductPreview = ({
               className="w-full h-full object-contain"
             />
             
+            {/* Selected artwork overlay */}
+            {selectedArtwork && (
+              <div className="absolute inset-0">
+                <img
+                  src={selectedArtwork.image_url}
+                  alt={selectedArtwork.title}
+                  className="w-full h-full object-contain p-4"
+                />
+              </div>
+            )}
+            
             {/* Info overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent p-4 text-white flex flex-col justify-end">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 flex flex-col justify-end text-white">
               {selectedArtwork ? (
                 <>
-                  <p className="text-sm text-white/90 mb-1">by {selectedArtwork.student.name}</p>
-                  <h3 className="text-lg font-medium mb-1">{selectedArtwork.title}</h3>
-                  {selectedArtwork.description && (
-                    <p className="text-sm text-white/80 line-clamp-2">{selectedArtwork.description}</p>
-                  )}
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-white/90">Artist</p>
+                    <h3 className="text-xl font-semibold">{selectedArtwork.student.name}</h3>
+                    <p className="text-lg font-medium">{selectedArtwork.title}</p>
+                    {selectedArtwork.description && (
+                      <p className="text-sm text-white/80 line-clamp-2 mt-2">
+                        {selectedArtwork.description}
+                      </p>
+                    )}
+                  </div>
                 </>
               ) : (
                 <>
-                  <h3 className="text-lg font-medium mb-1">{product.name}</h3>
+                  <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
                   {product.description && (
-                    <p className="text-sm text-white/80 line-clamp-2">{product.description}</p>
+                    <p className="text-sm text-white/80 line-clamp-2">
+                      {product.description}
+                    </p>
                   )}
                 </>
               )}
