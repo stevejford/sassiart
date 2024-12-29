@@ -16,13 +16,14 @@ export function ArtworkGrid({ artwork, onArtworkSelect }: ArtworkGridProps) {
             alt={art.title}
             className="w-full aspect-square object-cover rounded-lg"
           />
-          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
             <div className="text-white text-center p-4">
               <h3 className="text-xl font-bold mb-2">{art.title}</h3>
-              <p className="text-sm mb-4">{art.description}</p>
+              <p className="text-sm mb-4 text-gray-300">{art.description}</p>
               <Button 
-                variant="secondary"
+                variant="outline"
                 onClick={() => onArtworkSelect(art.id)}
+                className="border-white text-white hover:bg-white hover:text-black"
               >
                 Customize on Products
               </Button>

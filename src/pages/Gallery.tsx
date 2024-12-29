@@ -60,7 +60,7 @@ export default function Gallery() {
     navigate(`/product/${productId}?artworkId=${selectedArtwork}`)
   }
 
-  if (!student) return <div>Loading...</div>
+  if (!student) return <div className="text-white">Loading...</div>
 
   return (
     <div className="container mx-auto px-4 py-8">
