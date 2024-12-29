@@ -1,8 +1,8 @@
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Share2, Mail } from "lucide-react"
+import { Share2, Mail, ShoppingBag } from "lucide-react"
 import { toast } from "sonner"
 import { useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 
 export default function Gallery() {
   const { studentId } = useParams()
+  const navigate = useNavigate()
   const [email, setEmail] = useState("")
   const [subscribeToGallery, setSubscribeToGallery] = useState(true)
   const [subscribeToNewsletter, setSubscribeToNewsletter] = useState(false)
@@ -69,6 +70,10 @@ export default function Gallery() {
 
     toast.success("Successfully subscribed!")
     setEmail("")
+  }
+
+  const handleCreateProduct = (artworkId: string) => {
+    navigate(`/products/new?artworkId=${artworkId}`)
   }
 
   if (!student) return <div>Loading...</div>
@@ -141,7 +146,12 @@ export default function Gallery() {
               <div className="text-white text-center p-4">
                 <h3 className="text-xl font-bold mb-2">{art.title}</h3>
                 <p className="text-sm">{art.description}</p>
-                <Button variant="secondary" className="mt-4">
+                <Button 
+                  variant="secondary" 
+                  className="mt-4"
+                  onClick={() => handleCreateProduct(art.id)}
+                >
+                  <ShoppingBag className="mr-2 h-4 w-4" />
                   Create Custom Product
                 </Button>
               </div>
