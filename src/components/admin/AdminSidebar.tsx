@@ -5,15 +5,13 @@ import {
   Bell,
   Image,
   ShoppingBag,
-  Settings,
+  Package,
 } from "lucide-react"
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
 
 export function AdminSidebar() {
   return (
-    <div className="pb-12 min-h-screen border-r">
+    <div className="w-64 min-h-screen border-r bg-white">
       <div className="space-y-4 py-4">
         <div className="px-3 py-2">
           <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
@@ -34,7 +32,7 @@ export function AdminSidebar() {
           </div>
         </div>
         <div className="px-3 py-2">
-          <h3 className="mb-2 px-4 text-sm font-semibold tracking-tight text-muted-foreground">
+          <h3 className="mb-2 px-4 text-sm font-medium text-gray-500">
             Users & Subscriptions
           </h3>
           <div className="space-y-1">
@@ -63,7 +61,7 @@ export function AdminSidebar() {
           </div>
         </div>
         <div className="px-3 py-2">
-          <h3 className="mb-2 px-4 text-sm font-semibold tracking-tight text-muted-foreground">
+          <h3 className="mb-2 px-4 text-sm font-medium text-gray-500">
             Content Management
           </h3>
           <div className="space-y-1">
@@ -86,6 +84,17 @@ export function AdminSidebar() {
                 >
                   <ShoppingBag className="mr-2 h-4 w-4" />
                   Products
+                </Button>
+              )}
+            </NavLink>
+            <NavLink to="/admin/orders">
+              {({ isActive }) => (
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  className="w-full justify-start"
+                >
+                  <Package className="mr-2 h-4 w-4" />
+                  Orders
                 </Button>
               )}
             </NavLink>

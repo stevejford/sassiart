@@ -12,6 +12,7 @@ import Students from "@/pages/admin/Students";
 import Subscriptions from "@/pages/admin/Subscriptions";
 import AdminGallery from "@/pages/admin/Gallery";
 import AdminProducts from "@/pages/admin/Products";
+import Orders from "@/pages/admin/Orders";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminSignup from "@/pages/AdminSignup";
 import AdminResetPassword from "@/pages/AdminResetPassword";
@@ -47,6 +48,7 @@ export function Routes() {
         <Route path="subscriptions" element={<Subscriptions />} />
         <Route path="gallery" element={<AdminGallery />} />
         <Route path="products" element={<AdminProducts />} />
+        <Route path="orders" element={<Orders />} />
       </Route>
     </RouterRoutes>
   );
