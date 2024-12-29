@@ -22,7 +22,7 @@ export default function AdminSignup() {
         email,
         password,
         options: {
-          emailRedirectTo: 'https://preview--artify-your-gear.lovable.app/admin/login'
+          emailRedirectTo: 'https://sassi4art.netlify.app/admin/login'
         }
       })
 
