@@ -7,6 +7,8 @@ export interface Student {
   is_gallery_public: boolean
   is_featured: boolean
   featured_until: string | null
+  about_text: string | null
+  photo_url: string | null
 }
 
 export interface ProductCategory {
