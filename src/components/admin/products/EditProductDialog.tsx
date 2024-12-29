@@ -9,6 +9,7 @@ import { ImageUpload } from "../artwork/ImageUpload"
 import { Product } from "@/types/database"
 import { toast } from "sonner"
 import { supabase } from "@/integrations/supabase/client"
+import { PriceFields } from "./PriceFields"
 
 interface EditProductDialogProps {
   product: Product | null
@@ -32,7 +33,6 @@ export function EditProductDialog({
     is_popular: false,
   })
 
-  // Update form when product changes or dialog opens
   useEffect(() => {
     if (product && isOpen) {
       setForm({
@@ -50,20 +50,13 @@ export function EditProductDialog({
     setForm(prev => ({ ...prev, image_url: url }))
   }
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (updates: Partial<Product> = form) => {
     if (!product) return
 
     try {
       const { error } = await supabase
         .from("products")
-        .update({
-          name: form.name,
-          description: form.description,
-          base_price: form.base_price,
-          category: form.category,
-          image_url: form.image_url,
-          is_popular: form.is_popular,
-        })
+        .update(updates)
         .eq("id", product.id)
 
       if (error) throw error
@@ -76,6 +69,8 @@ export function EditProductDialog({
       console.error(error)
     }
   }
+
+  if (!product) return null
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -101,13 +96,8 @@ export function EditProductDialog({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="price">Base Price</Label>
-            <Input
-              id="price"
-              type="number"
-              value={form.base_price}
-              onChange={(e) => setForm({ ...form, base_price: parseFloat(e.target.value) })}
-            />
+            <Label>Pricing</Label>
+            <PriceFields product={product} onUpdate={handleUpdate} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="category">Category</Label>
@@ -141,7 +131,7 @@ export function EditProductDialog({
             )}
             <ImageUpload onUpload={handleImageUpload} />
           </div>
-          <Button onClick={handleUpdate} className="w-full">
+          <Button onClick={() => handleUpdate()} className="w-full">
             Save Changes
           </Button>
         </div>
