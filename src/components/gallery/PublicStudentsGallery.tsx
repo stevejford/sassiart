@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Link } from "react-router-dom";
-import { User } from "lucide-react";
+import { User, Image } from "lucide-react";
 
 export function PublicStudentsGallery() {
   const { data: students } = useQuery({
@@ -31,12 +31,23 @@ export function PublicStudentsGallery() {
               className="block group"
             >
               <div className="relative aspect-square bg-muted rounded-lg overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <User className="w-12 h-12 text-muted-foreground" />
-                </div>
+                {student.photo_url ? (
+                  <img 
+                    src={student.photo_url} 
+                    alt={student.name}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <User className="w-12 h-12 text-muted-foreground" />
+                  </div>
+                )}
                 <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-4">
                   <h3 className="font-medium">{student.name}</h3>
-                  <p className="text-sm">View Gallery →</p>
+                  {student.about_text && (
+                    <p className="text-sm line-clamp-2">{student.about_text}</p>
+                  )}
+                  <p className="text-sm mt-1">View Gallery →</p>
                 </div>
               </div>
             </Link>

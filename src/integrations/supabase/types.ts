@@ -205,6 +205,7 @@ export type Database = {
       }
       students: {
         Row: {
+          about_text: string | null
           created_at: string
           email: string
           featured_until: string | null
@@ -213,8 +214,10 @@ export type Database = {
           is_featured: boolean | null
           is_gallery_public: boolean | null
           name: string
+          photo_url: string | null
         }
         Insert: {
+          about_text?: string | null
           created_at?: string
           email: string
           featured_until?: string | null
@@ -223,8 +226,10 @@ export type Database = {
           is_featured?: boolean | null
           is_gallery_public?: boolean | null
           name: string
+          photo_url?: string | null
         }
         Update: {
+          about_text?: string | null
           created_at?: string
           email?: string
           featured_until?: string | null
@@ -233,6 +238,7 @@ export type Database = {
           is_featured?: boolean | null
           is_gallery_public?: boolean | null
           name?: string
+          photo_url?: string | null
         }
         Relationships: []
       }
