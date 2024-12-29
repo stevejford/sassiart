@@ -8,7 +8,7 @@ import { ProductInfo } from "@/components/product/ProductInfo";
 import { ArtworkSelector } from "@/components/product/ArtworkSelector";
 import { ProductPreview } from "@/components/product/ProductPreview";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
 const ProductDetail = () => {
