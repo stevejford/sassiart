@@ -1,4 +1,5 @@
 import { Routes as RouterRoutes, Route } from "react-router-dom";
+import { Layout } from "@/components/Layout";
 import Index from "@/pages/Index";
 import Cart from "@/pages/Cart";
 import Checkout from "@/pages/Checkout";
@@ -19,12 +20,17 @@ import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
 export function Routes() {
   return (
     <RouterRoutes>
-      <Route path="/" element={<Index />} />
-      <Route path="/cart" element={<Cart />} />
-      <Route path="/checkout" element={<Checkout />} />
-      <Route path="/product/:id" element={<ProductDetail />} />
-      <Route path="/gallery/:studentName" element={<Gallery />} />
-      <Route path="/products/new" element={<NewProduct />} />
+      {/* Public routes wrapped in Layout */}
+      <Route element={<Layout />}>
+        <Route path="/" element={<Index />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/gallery/:studentName" element={<Gallery />} />
+        <Route path="/products/new" element={<NewProduct />} />
+      </Route>
+
+      {/* Admin routes */}
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin/signup" element={<AdminSignup />} />
       <Route path="/admin/reset-password" element={<AdminResetPassword />} />
@@ -44,4 +50,4 @@ export function Routes() {
       </Route>
     </RouterRoutes>
   );
-}
+};

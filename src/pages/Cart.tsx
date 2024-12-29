@@ -1,4 +1,3 @@
-import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
@@ -11,26 +10,21 @@ const Cart = () => {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen">
-        <Navbar />
-        <main className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-serif font-bold mb-8">Your Cart</h1>
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <p className="text-lg text-muted-foreground mb-4">Your cart is empty</p>
-            <Button onClick={() => navigate("/")}>Continue Shopping</Button>
-          </div>
-        </main>
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-serif font-bold mb-8">Your Cart</h1>
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <p className="text-lg text-muted-foreground mb-4">Your cart is empty</p>
+          <Button onClick={() => navigate("/")}>Continue Shopping</Button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-serif font-bold mb-8">Your Cart</h1>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-serif font-bold mb-8">Your Cart</h1>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
             {items.map((item) => (
               <div key={`${item.product.id}-${item.artwork.id}`} className="flex gap-4 p-4 border rounded-lg">
@@ -123,8 +117,7 @@ const Cart = () => {
               </Button>
             </div>
           </div>
-        </div>
-      </main>
+      </div>
     </div>
   );
 };
