@@ -4,6 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Artwork } from "@/types/database";
 
+interface ArtworkWithStudent extends Artwork {
+  student: {
+    name: string;
+  };
+}
+
 const Index = () => {
   const { data: featuredArtwork } = useQuery({
     queryKey: ['featured-artwork'],
@@ -14,7 +20,7 @@ const Index = () => {
         .limit(3);
       
       if (artworkError) throw artworkError;
-      return artworkData as (Artwork & { student: { name: string } })[];
+      return artworkData as ArtworkWithStudent[];
     },
   });
 
