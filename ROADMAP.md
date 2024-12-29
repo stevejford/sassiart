@@ -12,16 +12,16 @@
 - [x] Fix deployment routing issues
 
 ## 🚧 Stage 2: Product Management (In Progress)
-- [ ] Create product listing page
-- [ ] Implement product detail view
+- [x] Create product listing page
+- [x] Implement product detail view
+- [x] Enable product image upload
 - [ ] Add product management in admin panel
-- [ ] Enable product image upload
 - [ ] Add product categories
 - [ ] Implement product search and filtering
 
 ## 📋 Stage 3: Shopping Cart & Checkout
-- [ ] Create shopping cart functionality
-- [ ] Add cart persistence
+- [x] Create shopping cart functionality
+- [x] Add cart persistence
 - [ ] Implement checkout process
 - [ ] Add payment integration
 - [ ] Create order management system
@@ -29,8 +29,8 @@
 - [ ] Add order history for users
 
 ## 📋 Stage 4: Student Artwork Management
-- [ ] Create student portfolio pages
-- [ ] Enable artwork upload functionality
+- [x] Create student portfolio pages
+- [x] Enable artwork upload functionality
 - [ ] Add artwork management in admin panel
 - [ ] Implement artwork approval workflow
 - [ ] Create artwork showcase gallery
