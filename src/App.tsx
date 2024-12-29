@@ -3,7 +3,9 @@ import Index from "@/pages/Index"
 import Cart from "@/pages/Cart"
 import Checkout from "@/pages/Checkout"
 import ProductDetail from "@/pages/ProductDetail"
-import Admin from "@/pages/Admin"
+import { AdminLayout } from "@/components/admin/AdminLayout"
+import Dashboard from "@/pages/admin/Dashboard"
+import Students from "@/pages/admin/Students"
 import AdminLogin from "@/pages/AdminLogin"
 import AdminSignup from "@/pages/AdminSignup"
 import AdminResetPassword from "@/pages/AdminResetPassword"
@@ -22,13 +24,16 @@ function App() {
         <Route path="/admin/signup" element={<AdminSignup />} />
         <Route path="/admin/reset-password" element={<AdminResetPassword />} />
         <Route
-          path="/admin/*"
+          path="/admin"
           element={
             <ProtectedAdminRoute>
-              <Admin />
+              <AdminLayout />
             </ProtectedAdminRoute>
           }
-        />
+        >
+          <Route index element={<Dashboard />} />
+          <Route path="students" element={<Students />} />
+        </Route>
       </Routes>
       <Toaster />
     </Router>
