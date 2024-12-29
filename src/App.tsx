@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import Index from "@/pages/Index"
 import Cart from "@/pages/Cart"
+import Checkout from "@/pages/Checkout"
 import ProductDetail from "@/pages/ProductDetail"
 import Admin from "@/pages/Admin"
 import AdminLogin from "@/pages/AdminLogin"
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/signup" element={<AdminSignup />} />

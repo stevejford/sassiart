@@ -114,7 +114,11 @@ const Cart = () => {
                   <span>${total.toFixed(2)}</span>
                 </div>
               </div>
-              <Button className="w-full mt-6" size="lg">
+              <Button 
+                className="w-full mt-6" 
+                size="lg"
+                onClick={() => navigate("/checkout")}
+              >
                 Proceed to Checkout
               </Button>
             </div>
