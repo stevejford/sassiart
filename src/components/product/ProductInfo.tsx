@@ -6,9 +6,15 @@ interface ProductInfoProps {
   product: Product;
   onAddToCart: () => void;
   isArtworkSelected: boolean;
+  isFeatured?: boolean;
 }
 
-export const ProductInfo = ({ product, onAddToCart, isArtworkSelected }: ProductInfoProps) => {
+export const ProductInfo = ({ 
+  product, 
+  onAddToCart, 
+  isArtworkSelected,
+  isFeatured = false 
+}: ProductInfoProps) => {
   return (
     <div className="space-y-6">
       <div>

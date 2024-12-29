@@ -7,13 +7,15 @@ interface ArtworkSelectorProps {
   selectedArtwork: string | null;
   onArtworkSelect: (artworkId: string) => void;
   isLoading: boolean;
+  isFeatured?: boolean;
 }
 
 export const ArtworkSelector = ({ 
   artwork, 
   selectedArtwork, 
   onArtworkSelect,
-  isLoading 
+  isLoading,
+  isFeatured = false
 }: ArtworkSelectorProps) => {
   if (isLoading) {
     return (

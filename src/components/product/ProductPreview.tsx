@@ -3,9 +3,14 @@ import { Product, ArtworkWithStudent } from "@/types/database";
 interface ProductPreviewProps {
   product: Product;
   selectedArtwork: ArtworkWithStudent | undefined;
+  isFeatured?: boolean;
 }
 
-export const ProductPreview = ({ product, selectedArtwork }: ProductPreviewProps) => {
+export const ProductPreview = ({ 
+  product, 
+  selectedArtwork,
+  isFeatured = false
+}: ProductPreviewProps) => {
   return (
     <div className="sticky top-24">
       <div className="aspect-square overflow-hidden rounded-lg border bg-white relative">
@@ -15,11 +20,11 @@ export const ProductPreview = ({ product, selectedArtwork }: ProductPreviewProps
           className="w-full h-full object-contain p-4"
         />
         {selectedArtwork && (
-          <div className="absolute inset-0 flex items-center justify-center p-8">
+          <div className={`absolute inset-0 flex items-center justify-center p-8 ${isFeatured ? 'mix-blend-multiply' : ''}`}>
             <img
               src={selectedArtwork.image_url}
-              alt="Selected artwork"
-              className="max-w-full max-h-full object-contain mix-blend-multiply"
+              alt={selectedArtwork.title}
+              className="max-w-full max-h-full object-contain"
             />
           </div>
         )}
