@@ -104,25 +104,31 @@ const ProductDetail = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Product Preview - Takes up 7 columns on large screens */}
+        <div className="lg:col-span-7">
           <ProductPreview 
             product={product} 
             selectedArtwork={selectedArtworkDetails}
           />
+        </div>
+        
+        {/* Product Info - Takes up 5 columns on large screens */}
+        <div className="lg:col-span-5 space-y-8">
           <ProductInfo 
             product={product}
             onAddToCart={handleAddToCart}
             isArtworkSelected={!!selectedArtwork}
           />
-        </div>
-        <div>
-          <ArtworkSelector
-            artwork={artwork}
-            selectedArtwork={selectedArtwork}
-            onArtworkSelect={setSelectedArtwork}
-            isLoading={artworksLoading}
-          />
+          
+          <div className="pt-8 border-t">
+            <ArtworkSelector
+              artwork={artwork}
+              selectedArtwork={selectedArtwork}
+              onArtworkSelect={setSelectedArtwork}
+              isLoading={artworksLoading}
+            />
+          </div>
         </div>
       </div>
     </div>
