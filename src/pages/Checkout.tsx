@@ -230,7 +230,7 @@ const Checkout = () => {
                           Artwork: {item.artwork.title}
                         </p>
                         <p className="text-sm text-gray-500">
-                          By {item.artwork.student_name}
+                          By {item.artwork.student.name}
                         </p>
                         <p className="mt-1 font-medium">
                           {formatPrice(item.product.base_price * item.quantity)}
