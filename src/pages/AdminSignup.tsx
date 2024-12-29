@@ -22,7 +22,7 @@ export default function AdminSignup() {
         email,
         password,
         options: {
-          emailRedirectTo: 'https://sassi4art.lovable.app/admin/verify'
+          emailRedirectTo: 'https://sassiart.netlify.app/admin/verify'
         }
       })
 
