@@ -1,91 +1,166 @@
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
-
-const SAMPLE_PRODUCTS = {
-  1: {
-    id: 1,
-    image: "/placeholder.svg",
-    title: "Abstract Dreams",
-    artist: "Emma Thompson",
-    price: 24.99,
-    description: "A vibrant exploration of color and emotion through abstract forms.",
-  },
-};
+import { Product, ArtworkWithStudent } from "@/types/database";
+import { useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/components/ui/use-toast";
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const { toast } = useToast();
-  const [productType, setProductType] = useState("keychain");
+  const [selectedArtwork, setSelectedArtwork] = useState<string | null>(null);
 
-  const product = SAMPLE_PRODUCTS[Number(id)];
+  const { data: product, isLoading: productLoading } = useQuery({
+    queryKey: ['product', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error) throw error;
+      return data as Product;
+    },
+  });
 
-  if (!product) {
-    return <div>Product not found</div>;
-  }
+  const { data: artworks, isLoading: artworksLoading } = useQuery({
+    queryKey: ['artworks'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('artwork')
+        .select(`
+          *,
+          student:students(name)
+        `);
+      
+      if (error) throw error;
+      return data as ArtworkWithStudent[];
+    },
+  });
 
   const handleAddToCart = () => {
+    if (!selectedArtwork) {
+      toast({
+        title: "Please select artwork",
+        description: "You need to select artwork to customize this product",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // TODO: Implement cart functionality
     toast({
       title: "Added to cart",
-      description: "Your item has been added to the cart",
+      description: "Your customized product has been added to the cart",
     });
   };
+
+  if (productLoading) {
+    return (
+      <div className="min-h-screen">
+        <Navbar />
+        <main className="container mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Skeleton className="aspect-square w-full" />
+            <div className="space-y-4">
+              <Skeleton className="h-8 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+              <Skeleton className="h-24 w-full" />
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen">
+        <Navbar />
+        <main className="container mx-auto px-4 py-8">
+          <p className="text-center text-lg text-muted-foreground">
+            Product not found
+          </p>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
       <Navbar />
       <main className="container mx-auto px-4 py-8">
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="aspect-square">
-            <img
-              src={product.image}
-              alt={product.title}
-              className="w-full h-full object-cover rounded-lg"
-            />
-          </div>
-          <div className="flex flex-col gap-6">
-            <div>
-              <h1 className="text-3xl font-serif font-bold mb-2">{product.title}</h1>
-              <p className="text-lg text-muted-foreground">by {product.artist}</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-6">
+            <div className="aspect-square overflow-hidden rounded-lg border">
+              <img
+                src={product.image_url}
+                alt={product.name}
+                className="w-full h-full object-cover"
+              />
             </div>
-            <p className="text-lg">{product.description}</p>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Select Product Type
-                </label>
-                <Select
-                  value={productType}
-                  onValueChange={setProductType}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="keychain">Keychain - $24.99</SelectItem>
-                    <SelectItem value="sticker">Sticker - $4.99</SelectItem>
-                    <SelectItem value="tote">Tote Bag - $29.99</SelectItem>
-                  </SelectContent>
-                </Select>
+            {selectedArtwork && (
+              <div className="aspect-square overflow-hidden rounded-lg border">
+                <img
+                  src={artworks?.find(a => a.id === selectedArtwork)?.image_url}
+                  alt="Selected artwork"
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <Button 
-                size="lg" 
-                className="w-full"
-                onClick={handleAddToCart}
-              >
-                Add to Cart
-              </Button>
+            )}
+          </div>
+
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-serif font-bold mb-2">{product.name}</h1>
+              <p className="text-lg text-muted-foreground">${product.base_price.toFixed(2)}</p>
             </div>
+
+            <div>
+              <h2 className="text-xl font-serif font-semibold mb-4">Select Artwork</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {artworksLoading ? (
+                  Array(6).fill(0).map((_, i) => (
+                    <Skeleton key={i} className="aspect-square" />
+                  ))
+                ) : (
+                  artworks?.map((artwork) => (
+                    <div
+                      key={artwork.id}
+                      className={`aspect-square rounded-lg border overflow-hidden cursor-pointer transition-all ${
+                        selectedArtwork === artwork.id ? 'ring-2 ring-primary' : ''
+                      }`}
+                      onClick={() => setSelectedArtwork(artwork.id)}
+                    >
+                      <img
+                        src={artwork.image_url}
+                        alt={artwork.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <Button
+              className="w-full"
+              size="lg"
+              onClick={handleAddToCart}
+            >
+              Add to Cart
+            </Button>
+
+            {product.description && (
+              <div>
+                <h2 className="text-xl font-serif font-semibold mb-2">Description</h2>
+                <p className="text-muted-foreground">{product.description}</p>
+              </div>
+            )}
           </div>
         </div>
       </main>
