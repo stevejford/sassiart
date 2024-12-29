@@ -2,13 +2,7 @@ import { Navbar } from "@/components/Navbar";
 import { ProductGrid } from "@/components/ProductGrid";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Artwork } from "@/types/database";
-
-interface ArtworkWithStudent extends Artwork {
-  student: {
-    name: string;
-  };
-}
+import { ArtworkWithStudent } from "@/types/database";
 
 const Index = () => {
   const { data: featuredArtwork } = useQuery({
@@ -16,7 +10,10 @@ const Index = () => {
     queryFn: async () => {
       const { data: artworkData, error: artworkError } = await supabase
         .from('artwork')
-        .select('*, student:students(name)')
+        .select(`
+          *,
+          student:students(name)
+        `)
         .limit(3);
       
       if (artworkError) throw artworkError;

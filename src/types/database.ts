@@ -23,3 +23,10 @@ export interface Product {
   image_url: string;
   created_at: string;
 }
+
+// Type for artwork with joined student data
+export interface ArtworkWithStudent extends Artwork {
+  student: {
+    name: string;
+  };
+}
