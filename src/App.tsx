@@ -1,53 +1,25 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import Index from "@/pages/Index"
-import Cart from "@/pages/Cart"
-import Checkout from "@/pages/Checkout"
-import ProductDetail from "@/pages/ProductDetail"
-import Gallery from "@/pages/Gallery"
-import NewProduct from "@/pages/NewProduct"
-import { AdminLayout } from "@/components/admin/AdminLayout"
-import Dashboard from "@/pages/admin/Dashboard"
-import Students from "@/pages/admin/Students"
-import Subscriptions from "@/pages/admin/Subscriptions"
-import AdminGallery from "@/pages/admin/Gallery"
-import AdminProducts from "@/pages/admin/Products"
-import AdminLogin from "@/pages/AdminLogin"
-import AdminSignup from "@/pages/AdminSignup"
-import AdminResetPassword from "@/pages/AdminResetPassword"
-import ProtectedAdminRoute from "@/components/ProtectedAdminRoute"
-import { Toaster } from "@/components/ui/sonner"
+import { BrowserRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { CartProvider } from "@/contexts/CartContext";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as SonnerToaster } from "@/components/ui/sonner";
+import { Routes } from "./Routes";
+import "./App.css";
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/product/:id" element={<ProductDetail />} />
-        <Route path="/gallery/:studentName" element={<Gallery />} />
-        <Route path="/products/new" element={<NewProduct />} />
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/signup" element={<AdminSignup />} />
-        <Route path="/admin/reset-password" element={<AdminResetPassword />} />
-        <Route
-          path="/admin"
-          element={
-            <ProtectedAdminRoute>
-              <AdminLayout />
-            </ProtectedAdminRoute>
-          }
-        >
-          <Route index element={<Dashboard />} />
-          <Route path="students" element={<Students />} />
-          <Route path="subscriptions" element={<Subscriptions />} />
-          <Route path="gallery" element={<AdminGallery />} />
-          <Route path="products" element={<AdminProducts />} />
-        </Route>
-      </Routes>
-      <Toaster />
-    </Router>
-  )
+    <QueryClientProvider client={queryClient}>
+      <CartProvider>
+        <BrowserRouter>
+          <Routes />
+          <Toaster />
+          <SonnerToaster />
+        </BrowserRouter>
+      </CartProvider>
+    </QueryClientProvider>
+  );
 }
 
-export default App
+export default App;
