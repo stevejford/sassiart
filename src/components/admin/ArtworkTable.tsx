@@ -15,12 +15,13 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Pencil, Trash2, Image as ImageIcon } from "lucide-react"
+import { Pencil, Trash2 } from "lucide-react"
 
 interface ArtworkTableProps {
   artwork: ArtworkWithStudent[]
@@ -83,7 +84,6 @@ export const ArtworkTable = ({ artwork, onUpdate }: ArtworkTableProps) => {
       let imageUrl = selectedArtwork.image_url
 
       if (selectedFile) {
-        // Upload new image
         const fileExt = selectedFile.name.split('.').pop()
         const filePath = `${crypto.randomUUID()}.${fileExt}`
         
@@ -178,6 +178,9 @@ export const ArtworkTable = ({ artwork, onUpdate }: ArtworkTableProps) => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Artwork</DialogTitle>
+            <DialogDescription>
+              Make changes to the artwork details below.
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">

@@ -8,10 +8,14 @@
     <meta name="author" content="Lovable" />
     <meta property="og:image" content="/og-image.png" />
   </head>
-
   <body>
     <div id="root"></div>
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <script 
+      src="https://cdn.gpteng.co/gptengineer.js" 
+      type="module"
+      crossorigin="anonymous"
+      onerror="console.warn('GPT Engineer script failed to load, this is expected in production')"
+    ></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
