@@ -6,6 +6,8 @@ import Index from "@/pages/Index"
 import Cart from "@/pages/Cart"
 import ProductDetail from "@/pages/ProductDetail"
 import Admin from "@/pages/Admin"
+import AdminLogin from "@/pages/AdminLogin"
+import ProtectedAdminRoute from "@/components/ProtectedAdminRoute"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 // Create a client
@@ -23,7 +25,15 @@ function App() {
                 <Route path="/" element={<Index />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
-                <Route path="/admin" element={<Admin />} />
+                <Route path="/admin/login" element={<AdminLogin />} />
+                <Route
+                  path="/admin"
+                  element={
+                    <ProtectedAdminRoute>
+                      <Admin />
+                    </ProtectedAdminRoute>
+                  }
+                />
               </Routes>
             </main>
           </div>
