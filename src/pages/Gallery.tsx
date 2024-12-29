@@ -2,13 +2,15 @@ import { useParams, useNavigate } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Share2, Mail, ShoppingBag } from "lucide-react"
+import { Share2, Mail } from "lucide-react"
 import { toast } from "sonner"
 import { useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
+import { ProductCard } from "@/components/ProductCard"
+import { Product } from "@/types/database"
 
 export default function Gallery() {
   const { studentId } = useParams()
@@ -16,6 +18,8 @@ export default function Gallery() {
   const [email, setEmail] = useState("")
   const [subscribeToGallery, setSubscribeToGallery] = useState(true)
   const [subscribeToNewsletter, setSubscribeToNewsletter] = useState(false)
+  const [selectedArtwork, setSelectedArtwork] = useState<string | null>(null)
+  const [showProducts, setShowProducts] = useState(false)
 
   const { data: student } = useQuery({
     queryKey: ['student', studentId],
@@ -39,6 +43,17 @@ export default function Gallery() {
         .order('created_at', { ascending: false })
       return data
     },
+  })
+
+  const { data: products } = useQuery({
+    queryKey: ['products'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('products')
+        .select('*, product_categories(*)')
+      return data as Product[]
+    },
+    enabled: showProducts,
   })
 
   const handleShare = async () => {
@@ -72,8 +87,14 @@ export default function Gallery() {
     setEmail("")
   }
 
-  const handleCreateProduct = (artworkId: string) => {
-    navigate(`/products/new?artworkId=${artworkId}`)
+  const handleArtworkSelect = (artworkId: string) => {
+    setSelectedArtwork(artworkId)
+    setShowProducts(true)
+  }
+
+  const handleProductSelect = (productId: string) => {
+    if (!selectedArtwork) return
+    navigate(`/product/${productId}?artworkId=${selectedArtwork}`)
   }
 
   if (!student) return <div>Loading...</div>
@@ -134,31 +155,54 @@ export default function Gallery() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {artwork?.map((art) => (
-          <div key={art.id} className="group relative">
-            <img
-              src={art.image_url}
-              alt={art.title}
-              className="w-full aspect-square object-cover rounded-lg"
-            />
-            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-              <div className="text-white text-center p-4">
-                <h3 className="text-xl font-bold mb-2">{art.title}</h3>
-                <p className="text-sm">{art.description}</p>
-                <Button 
-                  variant="secondary" 
-                  className="mt-4"
-                  onClick={() => handleCreateProduct(art.id)}
-                >
-                  <ShoppingBag className="mr-2 h-4 w-4" />
-                  Create Custom Product
-                </Button>
+      {!showProducts ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {artwork?.map((art) => (
+            <div key={art.id} className="group relative">
+              <img
+                src={art.image_url}
+                alt={art.title}
+                className="w-full aspect-square object-cover rounded-lg"
+              />
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                <div className="text-white text-center p-4">
+                  <h3 className="text-xl font-bold mb-2">{art.title}</h3>
+                  <p className="text-sm mb-4">{art.description}</p>
+                  <Button 
+                    variant="secondary"
+                    onClick={() => handleArtworkSelect(art.id)}
+                  >
+                    Customize on Products
+                  </Button>
+                </div>
               </div>
             </div>
+          ))}
+        </div>
+      ) : (
+        <div>
+          <Button 
+            variant="outline" 
+            className="mb-6"
+            onClick={() => {
+              setShowProducts(false)
+              setSelectedArtwork(null)
+            }}
+          >
+            ← Back to Gallery
+          </Button>
+          <h2 className="text-2xl font-bold mb-6">Choose a Product to Customize</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {products?.map((product) => (
+              <ProductCard 
+                key={product.id} 
+                product={product}
+                onClick={() => handleProductSelect(product.id)}
+              />
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
     </div>
   )
 }
