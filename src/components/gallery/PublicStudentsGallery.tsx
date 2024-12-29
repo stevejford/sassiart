@@ -1,15 +1,17 @@
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Link } from "react-router-dom";
 import { User } from "lucide-react";
+import { toast } from "sonner";
 
 interface PublicStudentsGalleryProps {
   onArtworkSelect?: (artworkId: string) => void;
 }
 
 export function PublicStudentsGallery({ onArtworkSelect }: PublicStudentsGalleryProps) {
-  const { data: students } = useQuery({
+  const { data: students, refetch } = useQuery({
     queryKey: ['public-students'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -22,6 +24,30 @@ export function PublicStudentsGallery({ onArtworkSelect }: PublicStudentsGallery
       return data;
     },
   });
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('public-gallery-changes')
+      .on(
+        'postgres_changes',
+        { 
+          event: '*', 
+          schema: 'public', 
+          table: 'students',
+          filter: 'is_gallery_public=true'
+        },
+        (payload) => {
+          console.log('Student gallery change received:', payload);
+          refetch();
+          toast.info('Gallery updates available');
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [refetch]);
 
   if (!students?.length) return null;
 
@@ -36,8 +62,6 @@ export function PublicStudentsGallery({ onArtworkSelect }: PublicStudentsGallery
               onClick={(e) => {
                 if (onArtworkSelect) {
                   e.preventDefault();
-                  // Here we would typically fetch the student's artwork and show a selection UI
-                  // For now, we'll just pass a dummy artwork ID
                   onArtworkSelect(student.id);
                 }
               }}
