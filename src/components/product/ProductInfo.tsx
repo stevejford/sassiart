@@ -1,6 +1,8 @@
 import { Product } from "@/types/database";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { ShoppingCart, CreditCard, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface ProductInfoProps {
   product: Product;
@@ -15,6 +17,13 @@ export const ProductInfo = ({
   isArtworkSelected,
   isFeatured = false 
 }: ProductInfoProps) => {
+  const navigate = useNavigate();
+
+  const handleAddToCart = () => {
+    onAddToCart();
+    // Show success message or handle any additional logic
+  };
+
   return (
     <div className={`space-y-6 ${isFeatured ? 'mt-8' : ''}`}>
       <div>
@@ -31,15 +40,40 @@ export const ProductInfo = ({
         </div>
       )}
 
-      <div className="pt-4">
+      <div className="pt-4 space-y-4">
         <Button
-          className="w-full"
+          className="w-full bg-black hover:bg-black/90 text-white"
           size="lg"
-          onClick={onAddToCart}
+          onClick={handleAddToCart}
           disabled={!isArtworkSelected}
         >
+          <ShoppingCart className="mr-2 h-5 w-5" />
           {isArtworkSelected ? 'Add to Cart' : 'Select Artwork First'}
         </Button>
+
+        {isArtworkSelected && (
+          <div className="grid grid-cols-2 gap-4">
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => navigate(-1)}
+              className="w-full"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Continue Shopping
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => navigate("/cart")}
+              className="w-full"
+            >
+              <CreditCard className="mr-2 h-4 w-4" />
+              Checkout
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
