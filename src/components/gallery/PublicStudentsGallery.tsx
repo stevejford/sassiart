@@ -30,21 +30,21 @@ export function PublicStudentsGallery() {
               to={`/gallery/${student.name.toLowerCase().replace(/\s+/g, '-')}`}
               className="block group"
             >
-              <div className="relative aspect-square bg-gray-900 rounded-lg overflow-hidden">
+              <div className="relative aspect-square bg-muted rounded-lg overflow-hidden">
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <User className="w-12 h-12 text-gray-600" />
+                  <User className="w-12 h-12 text-muted-foreground" />
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-4">
+                <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-4">
                   <h3 className="font-medium">{student.name}</h3>
-                  <p className="text-sm text-gray-300">View Gallery →</p>
+                  <p className="text-sm">View Gallery →</p>
                 </div>
               </div>
             </Link>
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious className="text-white border-white hover:bg-white hover:text-black" />
-      <CarouselNext className="text-white border-white hover:bg-white hover:text-black" />
+      <CarouselPrevious />
+      <CarouselNext />
     </Carousel>
   );
 }

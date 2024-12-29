@@ -1,23 +1,26 @@
 import { NavLink } from "react-router-dom"
-import { Button } from "@/components/ui/button"
 import {
   LayoutDashboard,
   Users,
   Bell,
   Image,
   ShoppingBag,
+  Settings,
 } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 
 export function AdminSidebar() {
   return (
-    <div className="pb-12 min-h-screen w-64 border-r border-gray-200 bg-white">
+    <div className="pb-12 min-h-screen border-r">
       <div className="space-y-4 py-4">
         <div className="px-3 py-2">
-          <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight text-gray-900">
+          <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
             Admin Dashboard
           </h2>
           <div className="space-y-1">
-            <NavLink to="/admin">
+            <NavLink to="/admin" end>
               {({ isActive }) => (
                 <Button
                   variant={isActive ? "secondary" : "ghost"}
@@ -31,7 +34,7 @@ export function AdminSidebar() {
           </div>
         </div>
         <div className="px-3 py-2">
-          <h3 className="mb-2 px-4 text-sm font-semibold tracking-tight text-gray-500">
+          <h3 className="mb-2 px-4 text-sm font-semibold tracking-tight text-muted-foreground">
             Users & Subscriptions
           </h3>
           <div className="space-y-1">
@@ -60,7 +63,7 @@ export function AdminSidebar() {
           </div>
         </div>
         <div className="px-3 py-2">
-          <h3 className="mb-2 px-4 text-sm font-semibold tracking-tight text-gray-500">
+          <h3 className="mb-2 px-4 text-sm font-semibold tracking-tight text-muted-foreground">
             Content Management
           </h3>
           <div className="space-y-1">

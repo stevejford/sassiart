@@ -5,12 +5,13 @@ import { Product } from "@/types/database";
 
 interface ProductCardProps {
   product: Product;
-  onClick?: () => void;
+  onClick?: () => void; // Make onClick optional
 }
 
 export const ProductCard = ({ product, onClick }: ProductCardProps) => {
   const navigate = useNavigate();
 
+  // Use onClick if provided, otherwise use default navigation
   const handleClick = () => {
     if (onClick) {
       onClick();
@@ -20,8 +21,8 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
   };
 
   return (
-    <Card className="flex flex-col h-full overflow-hidden group animate-fadeIn">
-      <CardContent className="p-0 flex-grow">
+    <Card className="overflow-hidden group animate-fadeIn">
+      <CardContent className="p-0">
         <div className="aspect-square overflow-hidden">
           <img
             src={product.image_url}
@@ -31,9 +32,9 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
         </div>
       </CardContent>
       <CardFooter className="flex flex-col items-start gap-2 p-4">
-        <div className="flex flex-col w-full">
-          <h3 className="font-serif text-lg font-medium line-clamp-1">{product.name}</h3>
-          <p className="text-sm text-muted-foreground line-clamp-1">
+        <div className="flex flex-col">
+          <h3 className="font-serif text-lg font-medium">{product.name}</h3>
+          <p className="text-sm text-muted-foreground">
             {product.product_categories?.name || product.category}
           </p>
         </div>

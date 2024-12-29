@@ -21,16 +21,16 @@ export function AdminLayout() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-white">
+      <div className="min-h-screen flex w-full bg-gray-50">
         <AdminSidebar />
         <div className="flex-1 flex flex-col">
-          <header className="border-b border-gray-200 bg-white p-4 flex justify-end">
+          <header className="border-b bg-white p-4 flex justify-end">
             <Button variant="outline" size="sm" onClick={handleSignOut}>
               <LogOut className="h-4 w-4 mr-2" />
               Sign Out
             </Button>
           </header>
-          <main className="flex-1">
+          <main className="flex-1 p-8">
             <Outlet />
           </main>
         </div>

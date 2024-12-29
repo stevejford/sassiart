@@ -42,11 +42,11 @@ export function FeaturedStudentGallery({ studentId }: FeaturedStudentGalleryProp
                 alt={art.title}
                 className="w-full aspect-square object-cover transition-transform duration-300 group-hover:scale-105"
               />
-              <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-4">
+              <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-4">
                 <h3 className="font-medium">{art.title}</h3>
-                <p className="text-sm mb-2 text-gray-300">{art.description}</p>
+                <p className="text-sm mb-2">{art.description}</p>
                 <Link to={`/product/new?artwork=${art.id}`}>
-                  <Button variant="outline" size="sm" className="border-white text-white hover:bg-white hover:text-black">
+                  <Button variant="secondary" size="sm">
                     <ShoppingCart className="w-4 h-4 mr-2" />
                     Customize Product
                   </Button>
@@ -56,8 +56,8 @@ export function FeaturedStudentGallery({ studentId }: FeaturedStudentGalleryProp
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious className="text-white border-white hover:bg-white hover:text-black" />
-      <CarouselNext className="text-white border-white hover:bg-white hover:text-black" />
+      <CarouselPrevious />
+      <CarouselNext />
     </Carousel>
   );
 }
