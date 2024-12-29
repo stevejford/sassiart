@@ -9,6 +9,8 @@ import { AdminLayout } from "@/components/admin/AdminLayout"
 import Dashboard from "@/pages/admin/Dashboard"
 import Students from "@/pages/admin/Students"
 import Subscriptions from "@/pages/admin/Subscriptions"
+import AdminGallery from "@/pages/admin/Gallery"
+import AdminProducts from "@/pages/admin/Products"
 import AdminLogin from "@/pages/AdminLogin"
 import AdminSignup from "@/pages/AdminSignup"
 import AdminResetPassword from "@/pages/AdminResetPassword"
@@ -39,6 +41,8 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="students" element={<Students />} />
           <Route path="subscriptions" element={<Subscriptions />} />
+          <Route path="gallery" element={<AdminGallery />} />
+          <Route path="products" element={<AdminProducts />} />
         </Route>
       </Routes>
       <Toaster />
