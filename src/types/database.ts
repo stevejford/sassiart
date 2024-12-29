@@ -13,6 +13,7 @@ export interface Artwork {
   description: string | null;
   image_url: string;
   created_at: string;
+  is_private: boolean | null;
 }
 
 export interface ProductCategory {
@@ -31,6 +32,8 @@ export interface Product {
   category_id: string | null;
   image_url: string;
   created_at: string;
+  is_popular: boolean | null;
+  total_sales: number | null;
   product_categories?: ProductCategory | null;
 }
 

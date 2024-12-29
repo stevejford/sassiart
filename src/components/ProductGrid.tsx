@@ -29,40 +29,40 @@ export const ProductGrid = () => {
     },
   });
 
-  const { data: popularProducts } = useQuery({
+  const { data: popularProducts } = useQuery<Product[]>({
     queryKey: ['popular-products'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('products')
-        .select('*, product_categories(name)')
+        .select('*, product_categories(*)')
         .eq('is_popular', true)
         .limit(3);
       
       if (error) throw error;
-      return data as Product[];
+      return data;
     },
   });
 
-  const { data: bestSellers } = useQuery({
+  const { data: bestSellers } = useQuery<Product[]>({
     queryKey: ['best-sellers'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('products')
-        .select('*, product_categories(name)')
+        .select('*, product_categories(*)')
         .order('total_sales', { ascending: false })
         .limit(3);
       
       if (error) throw error;
-      return data as Product[];
+      return data;
     },
   });
 
-  const { data: products, isLoading, error } = useQuery({
+  const { data: products, isLoading, error } = useQuery<Product[]>({
     queryKey: ['products', searchQuery, selectedCategory],
     queryFn: async () => {
       let query = supabase
         .from('products')
-        .select('*, product_categories(name)')
+        .select('*, product_categories(*)')
         .order('created_at', { ascending: false });
 
       if (searchQuery) {
@@ -75,7 +75,7 @@ export const ProductGrid = () => {
 
       const { data, error } = await query;
       if (error) throw error;
-      return data as Product[];
+      return data;
     },
   });
 
