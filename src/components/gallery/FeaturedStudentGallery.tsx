@@ -5,6 +5,8 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { User } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 
 interface FeaturedStudentGalleryProps {
   studentId?: string;
@@ -101,46 +103,80 @@ export function FeaturedStudentGallery({ studentId }: FeaturedStudentGalleryProp
 
   console.log('Rendering featured artwork gallery:', featuredArtwork.length, 'items');
   return (
-    <Carousel className="w-full">
-      <CarouselContent>
-        {featuredArtwork.map((artwork) => (
-          <CarouselItem key={artwork.id} className="md:basis-1/2 lg:basis-1/3">
-            <Link 
-              to={`/gallery/${artwork.student.name.toLowerCase().replace(/\s+/g, '-')}`}
-              className="block group"
-            >
-              <div className="relative aspect-square bg-muted rounded-lg overflow-hidden">
-                {artwork.student.photo_url ? (
-                  <img 
-                    src={artwork.student.photo_url} 
-                    alt={artwork.student.name}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                ) : artwork.image_url ? (
-                  <img 
-                    src={artwork.image_url} 
-                    alt={artwork.title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center bg-muted">
-                    <User className="w-12 h-12 text-muted-foreground" />
+    <div className="container mx-auto px-4 py-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="lg:col-span-7">
+          <Carousel className="w-full">
+            <CarouselContent>
+              {featuredArtwork.map((artwork) => (
+                <CarouselItem key={artwork.id}>
+                  <Link 
+                    to={`/gallery/${artwork.student.name.toLowerCase().replace(/\s+/g, '-')}`}
+                    className="block group"
+                  >
+                    <div className="relative aspect-square bg-muted rounded-lg overflow-hidden">
+                      <div className="sticky top-24">
+                        <div className="aspect-square overflow-hidden rounded-lg border bg-white relative">
+                          {artwork.student.photo_url ? (
+                            <img 
+                              src={artwork.student.photo_url} 
+                              alt={artwork.student.name}
+                              className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            />
+                          ) : artwork.image_url ? (
+                            <img 
+                              src={artwork.image_url} 
+                              alt={artwork.title}
+                              className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            />
+                          ) : (
+                            <div className="absolute inset-0 flex items-center justify-center bg-muted">
+                              <User className="w-12 h-12 text-muted-foreground" />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
+        </div>
+        
+        <div className="lg:col-span-5 space-y-8">
+          <ScrollArea className="h-[600px]">
+            <div className="space-y-6">
+              {featuredArtwork.map((artwork) => (
+                <div key={artwork.id} className="space-y-4">
+                  <div>
+                    <h1 className="text-4xl font-serif font-bold mb-2">{artwork.student.name}</h1>
+                    {artwork.student.about_text && (
+                      <>
+                        <Separator className="my-4" />
+                        <div>
+                          <h2 className="text-lg font-serif font-semibold mb-2">About the Artist</h2>
+                          <p className="text-muted-foreground leading-relaxed">{artwork.student.about_text}</p>
+                        </div>
+                      </>
+                    )}
                   </div>
-                )}
-                <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-4">
-                  <h3 className="font-medium">{artwork.student.name}</h3>
-                  {artwork.student.about_text && (
-                    <p className="text-sm line-clamp-2">{artwork.student.about_text}</p>
-                  )}
-                  <p className="text-sm mt-1">View Gallery →</p>
+                  <div className="pt-4">
+                    <Link 
+                      to={`/gallery/${artwork.student.name.toLowerCase().replace(/\s+/g, '-')}`}
+                      className="inline-block w-full text-center bg-primary text-primary-foreground px-8 py-3 rounded-md hover:bg-primary/90 transition-colors"
+                    >
+                      View Gallery
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
-    </Carousel>
+              ))}
+            </div>
+          </ScrollArea>
+        </div>
+      </div>
+    </div>
   );
 }
