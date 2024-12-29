@@ -5,6 +5,7 @@ import Cart from "@/pages/Cart";
 import Checkout from "@/pages/Checkout";
 import ProductDetail from "@/pages/ProductDetail";
 import Gallery from "@/pages/Gallery";
+import GalleryIndex from "@/pages/GalleryIndex";
 import NewProduct from "@/pages/NewProduct";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import Dashboard from "@/pages/admin/Dashboard";
@@ -27,6 +28,7 @@ export function Routes() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/gallery" element={<GalleryIndex />} />
         <Route path="/gallery/:studentName" element={<Gallery />} />
         <Route path="/products/new" element={<NewProduct />} />
       </Route>
