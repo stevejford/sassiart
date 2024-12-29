@@ -4,9 +4,11 @@ import Cart from "@/pages/Cart"
 import Checkout from "@/pages/Checkout"
 import ProductDetail from "@/pages/ProductDetail"
 import Gallery from "@/pages/Gallery"
+import NewProduct from "@/pages/NewProduct"
 import { AdminLayout } from "@/components/admin/AdminLayout"
 import Dashboard from "@/pages/admin/Dashboard"
 import Students from "@/pages/admin/Students"
+import Subscriptions from "@/pages/admin/Subscriptions"
 import AdminLogin from "@/pages/AdminLogin"
 import AdminSignup from "@/pages/AdminSignup"
 import AdminResetPassword from "@/pages/AdminResetPassword"
@@ -22,6 +24,7 @@ function App() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/gallery/:studentId" element={<Gallery />} />
+        <Route path="/products/new" element={<NewProduct />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/signup" element={<AdminSignup />} />
         <Route path="/admin/reset-password" element={<AdminResetPassword />} />
@@ -35,6 +38,7 @@ function App() {
         >
           <Route index element={<Dashboard />} />
           <Route path="students" element={<Students />} />
+          <Route path="subscriptions" element={<Subscriptions />} />
         </Route>
       </Routes>
       <Toaster />

@@ -1,96 +1,53 @@
-import {
-  LayoutDashboard,
-  Users,
-  ShoppingBag,
-  Image,
-  FileText,
-  Settings,
-  Mail,
-} from "lucide-react"
-import { useLocation, Link } from "react-router-dom"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar"
-
-const menuItems = [
-  {
-    title: "Dashboard",
-    icon: LayoutDashboard,
-    path: "/admin",
-  },
-  {
-    title: "Students",
-    icon: Users,
-    path: "/admin/students",
-  },
-  {
-    title: "Products",
-    icon: ShoppingBag,
-    path: "/admin/products",
-  },
-  {
-    title: "Artwork",
-    icon: Image,
-    path: "/admin/artwork",
-  },
-  {
-    title: "Orders",
-    icon: FileText,
-    path: "/admin/orders",
-  },
-  {
-    title: "Newsletter",
-    icon: Mail,
-    path: "/admin/newsletter",
-  },
-  {
-    title: "Settings",
-    icon: Settings,
-    path: "/admin/settings",
-  },
-]
+import { NavLink } from "react-router-dom"
+import { LayoutDashboard, Users, Bell } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 
 export function AdminSidebar() {
-  const location = useLocation()
-
   return (
-    <Sidebar>
-      <SidebarContent>
-        <div className="p-6">
-          <h1 className="text-xl font-bold">Sassi Art Admin</h1>
+    <div className="pb-12 min-h-screen">
+      <div className="space-y-4 py-4">
+        <div className="px-3 py-2">
+          <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
+            Admin Dashboard
+          </h2>
+          <div className="space-y-1">
+            <NavLink to="/admin" end>
+              {({ isActive }) => (
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  className="w-full justify-start"
+                >
+                  <LayoutDashboard className="mr-2 h-4 w-4" />
+                  Dashboard
+                </Button>
+              )}
+            </NavLink>
+            <NavLink to="/admin/students">
+              {({ isActive }) => (
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  className="w-full justify-start"
+                >
+                  <Users className="mr-2 h-4 w-4" />
+                  Students
+                </Button>
+              )}
+            </NavLink>
+            <NavLink to="/admin/subscriptions">
+              {({ isActive }) => (
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  className="w-full justify-start"
+                >
+                  <Bell className="mr-2 h-4 w-4" />
+                  Subscriptions
+                </Button>
+              )}
+            </NavLink>
+          </div>
         </div>
-        <SidebarGroup>
-          <SidebarGroupLabel>Menu</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.path}>
-                  <SidebarMenuButton
-                    className={
-                      location.pathname === item.path
-                        ? "bg-primary/10 text-primary"
-                        : ""
-                    }
-                    asChild
-                  >
-                    <Link to={item.path}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
+      </div>
+    </div>
   )
 }
