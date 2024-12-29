@@ -11,8 +11,17 @@ import {
 } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
 import { Product, Student, ArtworkWithStudent } from "@/types/database"
+import { Plus, Trash2 } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 export default function Admin() {
   const navigate = useNavigate()
@@ -21,6 +30,13 @@ export default function Admin() {
   const [artwork, setArtwork] = useState<ArtworkWithStudent[]>([])
   const [students, setStudents] = useState<Student[]>([])
   const [isAdmin, setIsAdmin] = useState(false)
+  const [newProduct, setNewProduct] = useState({
+    name: "",
+    description: "",
+    base_price: 0,
+    category: "",
+    image_url: "",
+  })
 
   useEffect(() => {
     checkAdminStatus()
@@ -53,6 +69,7 @@ export default function Admin() {
     const { data: productsData } = await supabase
       .from('products')
       .select('*')
+      .order('created_at', { ascending: false })
     if (productsData) setProducts(productsData)
 
     // Fetch artwork with student info
@@ -89,6 +106,54 @@ export default function Admin() {
     }
   }
 
+  const createProduct = async () => {
+    const { error } = await supabase
+      .from('products')
+      .insert([newProduct])
+
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error creating product",
+        description: error.message
+      })
+    } else {
+      toast({
+        title: "Product created",
+        description: "The new product has been created successfully."
+      })
+      setNewProduct({
+        name: "",
+        description: "",
+        base_price: 0,
+        category: "",
+        image_url: "",
+      })
+      fetchData()
+    }
+  }
+
+  const deleteProduct = async (id: string) => {
+    const { error } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', id)
+
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error deleting product",
+        description: error.message
+      })
+    } else {
+      toast({
+        title: "Product deleted",
+        description: "The product has been deleted successfully."
+      })
+      fetchData()
+    }
+  }
+
   if (!isAdmin) return null
 
   return (
@@ -96,7 +161,51 @@ export default function Admin() {
       <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
 
       <div>
-        <h2 className="text-xl font-semibold mb-4">Products</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">Products</h2>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Product
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add New Product</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <Input
+                  placeholder="Product Name"
+                  value={newProduct.name}
+                  onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+                />
+                <Textarea
+                  placeholder="Description"
+                  value={newProduct.description || ""}
+                  onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+                />
+                <Input
+                  type="number"
+                  placeholder="Base Price"
+                  value={newProduct.base_price}
+                  onChange={(e) => setNewProduct({ ...newProduct, base_price: parseFloat(e.target.value) })}
+                />
+                <Input
+                  placeholder="Category"
+                  value={newProduct.category}
+                  onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
+                />
+                <Input
+                  placeholder="Image URL"
+                  value={newProduct.image_url}
+                  onChange={(e) => setNewProduct({ ...newProduct, image_url: e.target.value })}
+                />
+                <Button onClick={createProduct}>Create Product</Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
         <Table>
           <TableHeader>
             <TableRow>
@@ -104,6 +213,7 @@ export default function Admin() {
               <TableHead>Description</TableHead>
               <TableHead>Price</TableHead>
               <TableHead>Category</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -133,6 +243,15 @@ export default function Admin() {
                     defaultValue={product.category}
                     onBlur={(e) => updateProduct(product.id, { category: e.target.value })}
                   />
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => deleteProduct(product.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
