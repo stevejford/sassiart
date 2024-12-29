@@ -20,9 +20,15 @@ export const ProductInfo = ({
   const navigate = useNavigate();
 
   const handleAddToCart = () => {
+    console.log('ProductInfo: Add to cart button clicked');
+    console.log('ProductInfo: Artwork selected status:', isArtworkSelected);
+    
     if (!isArtworkSelected) {
+      console.log('ProductInfo: Cannot add to cart - no artwork selected');
       return;
     }
+    
+    console.log('ProductInfo: Calling onAddToCart callback');
     onAddToCart();
   };
 

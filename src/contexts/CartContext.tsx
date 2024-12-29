@@ -23,16 +23,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
 
   const addItem = (product: Product, artwork: ArtworkWithStudent) => {
+    console.log('CartContext: Attempting to add item to cart:', { product: product.name, artwork: artwork.title });
+    
     setItems((currentItems) => {
       const existingItem = currentItems.find(
         item => item.product.id === product.id && item.artwork.id === artwork.id
       );
 
       if (existingItem) {
+        console.log('CartContext: Item already exists in cart - showing error toast');
         toast.error("This item is already in your cart");
         return currentItems;
       }
 
+      console.log('CartContext: Adding new item to cart - showing success toast');
       toast.success("Added to cart");
       return [...currentItems, { product, artwork, quantity: 1 }];
     });
