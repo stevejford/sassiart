@@ -26,7 +26,10 @@ export default function AdminSignup() {
         }
       })
 
-      if (signUpError) throw signUpError
+      if (signUpError) {
+        toast.error(signUpError.message)
+        return
+      }
 
       if (user) {
         // Create student record with admin privileges
@@ -41,13 +44,16 @@ export default function AdminSignup() {
             }
           ])
 
-        if (studentError) throw studentError
+        if (studentError) {
+          toast.error("Error creating student record")
+          return
+        }
 
         toast.success("Signup successful! Please check your email to verify your account.")
         navigate("/admin/login")
       }
     } catch (error) {
-      toast.error("Error during signup. Please try again.")
+      toast.error("An unexpected error occurred. Please try again.")
     } finally {
       setIsLoading(false)
     }
