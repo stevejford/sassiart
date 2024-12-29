@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { User } from "lucide-react";
 
 interface FeaturedStudentGalleryProps {
   studentId?: string;
@@ -17,11 +18,10 @@ export function FeaturedStudentGallery({ studentId }: FeaturedStudentGalleryProp
       
       let query = supabase
         .from('students')
-        .select('id')
+        .select('id, name, photo_url, about_text')
         .eq('is_featured', true)
         .eq('is_gallery_public', true);
 
-      // If studentId is provided, filter for that specific student
       if (studentId) {
         console.log('Filtering for specific student:', studentId);
         query = query.eq('id', studentId);
@@ -110,16 +110,27 @@ export function FeaturedStudentGallery({ studentId }: FeaturedStudentGalleryProp
               className="block group"
             >
               <div className="relative aspect-square bg-muted rounded-lg overflow-hidden">
-                <img 
-                  src={artwork.image_url} 
-                  alt={artwork.title}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
+                {artwork.student.photo_url ? (
+                  <img 
+                    src={artwork.student.photo_url} 
+                    alt={artwork.student.name}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                ) : artwork.image_url ? (
+                  <img 
+                    src={artwork.image_url} 
+                    alt={artwork.title}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center bg-muted">
+                    <User className="w-12 h-12 text-muted-foreground" />
+                  </div>
+                )}
                 <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-4">
                   <h3 className="font-medium">{artwork.student.name}</h3>
-                  <p className="text-sm font-medium">{artwork.title}</p>
-                  {artwork.description && (
-                    <p className="text-sm line-clamp-2">{artwork.description}</p>
+                  {artwork.student.about_text && (
+                    <p className="text-sm line-clamp-2">{artwork.student.about_text}</p>
                   )}
                   <p className="text-sm mt-1">View Gallery →</p>
                 </div>

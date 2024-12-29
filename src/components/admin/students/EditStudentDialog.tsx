@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import { Textarea } from "@/components/ui/textarea"
 import { supabase } from "@/integrations/supabase/client"
 import { toast } from "sonner"
 import { Student } from "@/types/database"
+import { ImageUpload } from "@/components/admin/artwork/ImageUpload"
 
 interface EditStudentDialogProps {
   student: Student | null
@@ -26,9 +28,10 @@ export function EditStudentDialog({
     email: "",
     is_gallery_public: false,
     is_featured: false,
+    about_text: "",
+    photo_url: "",
   })
 
-  // Update form when student changes or dialog opens
   useEffect(() => {
     if (student && isOpen) {
       console.log('Setting initial form state:', {
@@ -36,6 +39,8 @@ export function EditStudentDialog({
         email: student.email,
         is_gallery_public: Boolean(student.is_gallery_public),
         is_featured: Boolean(student.is_featured),
+        about_text: student.about_text || "",
+        photo_url: student.photo_url || "",
       });
       
       setForm({
@@ -43,6 +48,8 @@ export function EditStudentDialog({
         email: student.email,
         is_gallery_public: Boolean(student.is_gallery_public),
         is_featured: Boolean(student.is_featured),
+        about_text: student.about_text || "",
+        photo_url: student.photo_url || "",
       })
     }
   }, [student, isOpen])
@@ -59,6 +66,8 @@ export function EditStudentDialog({
         email: form.email,
         is_gallery_public: form.is_gallery_public,
         is_featured: form.is_featured,
+        about_text: form.about_text,
+        photo_url: form.photo_url,
       })
       .eq("id", student.id)
 
@@ -102,6 +111,19 @@ export function EditStudentDialog({
               onChange={(e) => setForm({ ...form, email: e.target.value })}
             />
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="edit-about">About Me</Label>
+            <Textarea
+              id="edit-about"
+              value={form.about_text}
+              onChange={(e) => setForm({ ...form, about_text: e.target.value })}
+              placeholder="Tell us about the student..."
+            />
+          </div>
+          <ImageUpload
+            onUpload={(url) => setForm({ ...form, photo_url: url })}
+            currentImage={form.photo_url}
+          />
           <div className="flex items-center justify-between">
             <Label htmlFor="gallery-public">Public Gallery</Label>
             <Switch

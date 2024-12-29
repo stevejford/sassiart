@@ -3,9 +3,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { Plus } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import { toast } from "sonner"
+import { ImageUpload } from "@/components/admin/artwork/ImageUpload"
 
 interface AddStudentDialogProps {
   onStudentAdded: () => void
@@ -16,15 +18,17 @@ export function AddStudentDialog({ onStudentAdded }: AddStudentDialogProps) {
   const [form, setForm] = useState({
     name: "",
     email: "",
+    about_text: "",
+    photo_url: "",
   })
 
   const handleAdd = async () => {
-    const { error } = await supabase.from("students").insert([
-      {
-        name: form.name,
-        email: form.email,
-      },
-    ])
+    const { error } = await supabase.from("students").insert([{
+      name: form.name,
+      email: form.email,
+      about_text: form.about_text,
+      photo_url: form.photo_url,
+    }])
 
     if (error) {
       toast.error("Failed to add student")
@@ -33,7 +37,7 @@ export function AddStudentDialog({ onStudentAdded }: AddStudentDialogProps) {
 
     toast.success("Student added successfully")
     setIsOpen(false)
-    setForm({ name: "", email: "" })
+    setForm({ name: "", email: "", about_text: "", photo_url: "" })
     onStudentAdded()
   }
 
@@ -67,6 +71,19 @@ export function AddStudentDialog({ onStudentAdded }: AddStudentDialogProps) {
               onChange={(e) => setForm({ ...form, email: e.target.value })}
             />
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="about">About Me</Label>
+            <Textarea
+              id="about"
+              value={form.about_text}
+              onChange={(e) => setForm({ ...form, about_text: e.target.value })}
+              placeholder="Tell us about the student..."
+            />
+          </div>
+          <ImageUpload
+            onUpload={(url) => setForm({ ...form, photo_url: url })}
+            currentImage={form.photo_url}
+          />
           <Button onClick={handleAdd}>Add Student</Button>
         </div>
       </DialogContent>
