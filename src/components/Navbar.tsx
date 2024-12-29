@@ -11,7 +11,7 @@ export const Navbar = () => {
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
 
   return (
-    <nav className="border-b">
+    <nav className="bg-black text-white">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex flex-col items-start">
           <h1 
@@ -21,7 +21,7 @@ export const Navbar = () => {
           >
             STUDENT ART SHOP
           </h1>
-          <p className="text-sm text-muted-foreground" style={{ fontFamily: "'Inter', sans-serif" }}>
+          <p className="text-sm text-gray-400" style={{ fontFamily: "'Inter', sans-serif" }}>
             SUPPORTING YOUNG ARTISTS
           </p>
         </div>
@@ -30,6 +30,7 @@ export const Navbar = () => {
             variant="ghost" 
             size="icon"
             onClick={() => navigate("/cart")}
+            className="text-white hover:text-white hover:bg-gray-800"
           >
             <ShoppingCart className="h-5 w-5" />
           </Button>
