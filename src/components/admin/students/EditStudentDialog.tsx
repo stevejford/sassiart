@@ -31,17 +31,26 @@ export function EditStudentDialog({
   // Update form when student changes or dialog opens
   useEffect(() => {
     if (student && isOpen) {
+      console.log('Setting initial form state:', {
+        name: student.name,
+        email: student.email,
+        is_gallery_public: Boolean(student.is_gallery_public),
+        is_featured: Boolean(student.is_featured),
+      });
+      
       setForm({
         name: student.name,
         email: student.email,
-        is_gallery_public: student.is_gallery_public || false,
-        is_featured: student.is_featured || false,
+        is_gallery_public: Boolean(student.is_gallery_public),
+        is_featured: Boolean(student.is_featured),
       })
     }
   }, [student, isOpen])
 
   const handleEdit = async () => {
     if (!student) return
+
+    console.log('Saving student with data:', form);
 
     const { error } = await supabase
       .from("students")
@@ -54,6 +63,7 @@ export function EditStudentDialog({
       .eq("id", student.id)
 
     if (error) {
+      console.error('Error updating student:', error);
       toast.error("Failed to update student")
       return
     }
@@ -62,6 +72,11 @@ export function EditStudentDialog({
     onOpenChange(false)
     onStudentUpdated()
   }
+
+  const handleToggleChange = (field: 'is_gallery_public' | 'is_featured', checked: boolean) => {
+    console.log(`Toggling ${field} to:`, checked);
+    setForm(prev => ({ ...prev, [field]: checked }));
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -92,9 +107,7 @@ export function EditStudentDialog({
             <Switch
               id="gallery-public"
               checked={form.is_gallery_public}
-              onCheckedChange={(checked) =>
-                setForm({ ...form, is_gallery_public: checked })
-              }
+              onCheckedChange={(checked) => handleToggleChange('is_gallery_public', checked)}
             />
           </div>
           <div className="flex items-center justify-between">
@@ -102,9 +115,7 @@ export function EditStudentDialog({
             <Switch
               id="featured"
               checked={form.is_featured}
-              onCheckedChange={(checked) =>
-                setForm({ ...form, is_featured: checked })
-              }
+              onCheckedChange={(checked) => handleToggleChange('is_featured', checked)}
             />
           </div>
           <Button onClick={handleEdit} className="w-full">
