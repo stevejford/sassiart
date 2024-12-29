@@ -44,10 +44,32 @@ export type Database = {
           },
         ]
       }
+      product_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           base_price: number
           category: string
+          category_id: string | null
           created_at: string
           description: string | null
           id: string
@@ -57,6 +79,7 @@ export type Database = {
         Insert: {
           base_price: number
           category: string
+          category_id?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -66,13 +89,22 @@ export type Database = {
         Update: {
           base_price?: number
           category?: string
+          category_id?: string | null
           created_at?: string
           description?: string | null
           id?: string
           image_url?: string
           name?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       students: {
         Row: {
