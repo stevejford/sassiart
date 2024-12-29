@@ -16,18 +16,20 @@ export default function Products() {
   })
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Products Management</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Products</h2>
           <p className="text-muted-foreground">
-            Manage products and pricing
+            Manage your store's products and inventory
           </p>
         </div>
         <AddProductDialog onProductAdded={refetch} />
       </div>
 
-      {products && <ProductTable products={products} onUpdate={refetch} />}
+      <div className="bg-white rounded-lg border">
+        {products && <ProductTable products={products} onUpdate={refetch} />}
+      </div>
     </div>
   )
 }

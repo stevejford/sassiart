@@ -24,14 +24,17 @@ export function AdminLayout() {
       <div className="min-h-screen flex w-full bg-gray-50">
         <AdminSidebar />
         <div className="flex-1 flex flex-col">
-          <header className="border-b bg-white h-16 flex items-center justify-end px-4">
+          <header className="border-b bg-white h-16 flex items-center justify-between px-6">
+            <h1 className="text-lg font-semibold">Admin Dashboard</h1>
             <Button variant="outline" size="sm" onClick={handleSignOut}>
               <LogOut className="h-4 w-4 mr-2" />
               Sign Out
             </Button>
           </header>
-          <main className="flex-1">
-            <Outlet />
+          <main className="flex-1 bg-white">
+            <div className="h-full">
+              <Outlet />
+            </div>
           </main>
         </div>
       </div>
