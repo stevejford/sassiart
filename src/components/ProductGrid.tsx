@@ -14,7 +14,7 @@ import {
 
 export const ProductGrid = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   const { data: categories } = useQuery({
     queryKey: ['categories'],
@@ -41,7 +41,7 @@ export const ProductGrid = () => {
         query = query.ilike('name', `%${searchQuery}%`);
       }
 
-      if (selectedCategory) {
+      if (selectedCategory && selectedCategory !== "all") {
         query = query.eq('category_id', selectedCategory);
       }
 
@@ -76,7 +76,7 @@ export const ProductGrid = () => {
             <SelectValue placeholder="All categories" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All categories</SelectItem>
+            <SelectItem value="all">All categories</SelectItem>
             {categories?.map((category) => (
               <SelectItem key={category.id} value={category.id}>
                 {category.name}

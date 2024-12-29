@@ -4,11 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Product } from "@/types/database";
 
 interface ProductCardProps {
-  product: Product & {
-    product_categories: {
-      name: string;
-    } | null;
-  };
+  product: Product;
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
