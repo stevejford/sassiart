@@ -15,21 +15,21 @@ export const ProductInfo = ({ product, onAddToCart, isArtworkSelected }: Product
         <p className="text-lg text-muted-foreground">${product.base_price.toFixed(2)}</p>
       </div>
 
-      <Button
-        className="w-full"
-        size="lg"
-        onClick={onAddToCart}
-        disabled={!isArtworkSelected}
-      >
-        Add to Cart
-      </Button>
-
       {product.description && (
         <div>
           <h2 className="text-xl font-serif font-semibold mb-2">Description</h2>
           <p className="text-muted-foreground">{product.description}</p>
         </div>
       )}
+
+      <Button
+        className="w-full"
+        size="lg"
+        onClick={onAddToCart}
+        disabled={!isArtworkSelected}
+      >
+        {isArtworkSelected ? 'Add to Cart' : 'Select Artwork First'}
+      </Button>
     </div>
   );
 };

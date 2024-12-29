@@ -7,7 +7,7 @@ interface ProductPreviewProps {
 
 export const ProductPreview = ({ product, selectedArtwork }: ProductPreviewProps) => {
   return (
-    <div className="space-y-6">
+    <div>
       <div className="aspect-square overflow-hidden rounded-lg border relative">
         <img
           src={product.image_url}
@@ -15,11 +15,11 @@ export const ProductPreview = ({ product, selectedArtwork }: ProductPreviewProps
           className="w-full h-full object-cover"
         />
         {selectedArtwork && (
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center p-8 bg-white/10">
             <img
               src={selectedArtwork.image_url}
               alt="Selected artwork"
-              className="w-3/4 h-3/4 object-contain"
+              className="max-w-full max-h-full object-contain"
             />
           </div>
         )}

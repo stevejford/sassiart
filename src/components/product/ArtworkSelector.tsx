@@ -16,10 +16,13 @@ export const ArtworkSelector = ({
 }: ArtworkSelectorProps) => {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-        {Array(6).fill(0).map((_, i) => (
-          <Skeleton key={i} className="aspect-square" />
-        ))}
+      <div>
+        <h2 className="text-xl font-serif font-semibold mb-4">Select Artwork</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          {Array(6).fill(0).map((_, i) => (
+            <Skeleton key={i} className="aspect-square" />
+          ))}
+        </div>
       </div>
     );
   }
@@ -31,7 +34,7 @@ export const ArtworkSelector = ({
         {artwork?.map((art) => (
           <div
             key={art.id}
-            className={`aspect-square rounded-lg border overflow-hidden cursor-pointer transition-all ${
+            className={`relative aspect-square rounded-lg border overflow-hidden cursor-pointer transition-all ${
               selectedArtwork === art.id ? 'ring-2 ring-primary' : ''
             }`}
             onClick={() => onArtworkSelect(art.id)}
@@ -41,9 +44,9 @@ export const ArtworkSelector = ({
               alt={art.title}
               className="w-full h-full object-cover"
             />
-            <div className="p-2 bg-black/50 text-white absolute bottom-0 left-0 right-0">
+            <div className="absolute inset-x-0 bottom-0 bg-black/50 text-white p-2">
               <p className="text-sm font-medium truncate">{art.title}</p>
-              <p className="text-xs">by {art.student.name}</p>
+              <p className="text-xs truncate">by {art.student.name}</p>
             </div>
           </div>
         ))}
