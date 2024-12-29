@@ -37,12 +37,14 @@ export default function AdminLogin() {
       if (!studentData?.is_admin) {
         await supabase.auth.signOut()
         toast.error("Access denied. Admin privileges required.")
+        setIsLoading(false)
         return
       }
 
       toast.success("Welcome back, admin!")
       navigate("/admin")
     } catch (error) {
+      console.error("Login error:", error)
       toast.error("Invalid login credentials")
     } finally {
       setIsLoading(false)
