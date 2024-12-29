@@ -3,20 +3,22 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Product, ArtworkWithStudent } from "@/types/database";
 import { useState, useEffect } from "react";
-import { useToast } from "@/components/ui/use-toast";
 import { useCart } from "@/contexts/CartContext";
 import { ProductInfo } from "@/components/product/ProductInfo";
 import { ArtworkSelector } from "@/components/product/ArtworkSelector";
 import { ProductPreview } from "@/components/product/ProductPreview";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/Button";
+import { useNavigate } from "react-router-dom";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const artworkId = searchParams.get('artworkId');
   const source = searchParams.get('source') || 'direct';
-  const { toast } = useToast();
   const { addItem } = useCart();
   const [selectedArtwork, setSelectedArtwork] = useState<string | null>(artworkId || null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log('ProductDetail: Initialized with:', {
@@ -61,29 +63,38 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     if (!selectedArtwork || !product) {
-      toast({
-        title: "Please select artwork",
-        description: "You need to select artwork to customize this product",
-        variant: "destructive",
-      });
+      toast.error("Please select artwork to customize this product");
       return;
     }
     
     const artworkItem = artwork?.find(a => a.id === selectedArtwork);
     if (!artworkItem) {
-      toast({
-        title: "Error",
-        description: "Selected artwork not found",
-        variant: "destructive",
-      });
+      toast.error("Selected artwork not found");
       return;
     }
 
     addItem(product, artworkItem);
-    toast({
-      title: "Added to cart",
-      description: "Your customized product has been added to the cart",
-    });
+    
+    // Show navigation options after adding to cart
+    toast(
+      <div className="flex flex-col gap-2">
+        <h3 className="font-medium mb-1">Item added to cart</h3>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => navigate("/")}>
+            Keep Shopping
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => navigate("/cart")}>
+            View Cart
+          </Button>
+          <Button variant="default" size="sm" className="bg-black text-white hover:bg-gray-800" onClick={() => navigate("/checkout")}>
+            Checkout
+          </Button>
+        </div>
+      </div>,
+      {
+        duration: 5000
+      }
+    );
   };
 
   if (productLoading) {

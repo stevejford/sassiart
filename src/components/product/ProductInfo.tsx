@@ -1,6 +1,8 @@
 import { Product } from "@/types/database";
+import { formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { useNavigate } from "react-router-dom";
+import { Icons } from "@/components/ui/icons";
 
 interface ProductInfoProps {
   product: Product;
@@ -20,46 +22,64 @@ export const ProductInfo = ({
     isArtworkSelected
   });
 
-  const handleAddToCart = () => {
-    console.log('ProductInfo: Add to cart clicked', {
-      productId: product.id,
-      isArtworkSelected
-    });
+  const navigate = useNavigate();
+
+  const handleKeepShopping = () => {
     onAddToCart();
+    navigate("/");
+  };
+
+  const handleViewCart = () => {
+    onAddToCart();
+    navigate("/cart");
+  };
+
+  const handleBuyNow = () => {
+    onAddToCart();
+    navigate("/checkout");
   };
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">{product.name}</h1>
-        <p className="text-2xl font-bold mt-2">
-          ${product.base_price.toFixed(2)}
-        </p>
+        <p className="text-2xl font-bold mt-2">{formatPrice(product.base_price)}</p>
       </div>
-
-      <Separator />
-
+      
       {product.description && (
-        <div className="prose prose-sm">
+        <div className="prose max-w-none">
           <p>{product.description}</p>
         </div>
       )}
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         <Button 
-          size="lg" 
-          className="w-full"
-          onClick={handleAddToCart}
+          className="w-full bg-black text-white hover:bg-gray-800 h-14"
           disabled={!isArtworkSelected}
+          onClick={handleBuyNow}
         >
-          {isArtworkSelected ? 'Add to Cart' : 'Select Artwork First'}
+          <Icons.stripe className="mr-2 h-5 w-5" />
+          Buy now with Stripe
         </Button>
 
-        {!isArtworkSelected && (
-          <p className="text-sm text-muted-foreground text-center">
-            Please select artwork to customize this product
-          </p>
-        )}
+        <div className="grid grid-cols-2 gap-3">
+          <Button
+            variant="outline"
+            className="w-full h-14"
+            disabled={!isArtworkSelected}
+            onClick={handleKeepShopping}
+          >
+            Keep shopping
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full h-14"
+            disabled={!isArtworkSelected}
+            onClick={handleViewCart}
+          >
+            View cart
+          </Button>
+        </div>
       </div>
     </div>
   );
