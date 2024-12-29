@@ -1,7 +1,7 @@
+import { useState } from "react"
 import { Product } from "@/types/database"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
+import { supabase } from "@/integrations/supabase/client"
 import {
   Table,
   TableBody,
@@ -10,11 +10,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Trash2 } from "lucide-react"
-import { useToast } from "@/components/ui/use-toast"
-import { supabase } from "@/integrations/supabase/client"
-import { ProductImage } from "./products/ProductImage"
-import { PriceFields } from "./products/PriceFields"
+import { Button } from "@/components/ui/button"
+import { Pencil, Trash2 } from "lucide-react"
+import { EditProductDialog } from "./products/EditProductDialog"
 
 interface ProductTableProps {
   products: Product[]
@@ -22,108 +20,85 @@ interface ProductTableProps {
 }
 
 export const ProductTable = ({ products, onUpdate }: ProductTableProps) => {
-  const { toast } = useToast()
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
 
-  const updateProduct = async (id: string, updates: Partial<Product>) => {
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this product?")) return
+
     const { error } = await supabase
-      .from('products')
-      .update(updates)
-      .eq('id', id)
+      .from("products")
+      .delete()
+      .eq("id", id)
 
     if (error) {
-      toast({
-        variant: "destructive",
-        title: "Error updating product",
-        description: error.message
-      })
-    } else {
-      toast({
-        title: "Product updated",
-        description: "The product has been updated successfully."
-      })
-      onUpdate()
+      toast.error("Failed to delete product")
+      return
     }
+
+    toast.success("Product deleted successfully")
+    onUpdate()
   }
 
-  const deleteProduct = async (id: string) => {
-    const { error } = await supabase
-      .from('products')
-      .delete()
-      .eq('id', id)
-
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Error deleting product",
-        description: error.message
-      })
-    } else {
-      toast({
-        title: "Product deleted",
-        description: "The product has been deleted successfully."
-      })
-      onUpdate()
-    }
+  const handleEdit = (product: Product) => {
+    setSelectedProduct(product)
+    setIsEditDialogOpen(true)
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Image</TableHead>
-          <TableHead>Name</TableHead>
-          <TableHead>Description</TableHead>
-          <TableHead>Pricing</TableHead>
-          <TableHead>Category</TableHead>
-          <TableHead>Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {products.map((product) => (
-          <TableRow key={product.id}>
-            <TableCell>
-              <ProductImage
-                productId={product.id}
-                imageUrl={product.image_url}
-                onUpdate={(url) => updateProduct(product.id, { image_url: url })}
-              />
-            </TableCell>
-            <TableCell>
-              <Input
-                defaultValue={product.name}
-                onBlur={(e) => updateProduct(product.id, { name: e.target.value })}
-              />
-            </TableCell>
-            <TableCell>
-              <Textarea
-                defaultValue={product.description || ''}
-                onBlur={(e) => updateProduct(product.id, { description: e.target.value })}
-              />
-            </TableCell>
-            <TableCell>
-              <PriceFields
-                product={product}
-                onUpdate={(updates) => updateProduct(product.id, updates)}
-              />
-            </TableCell>
-            <TableCell>
-              <Input
-                defaultValue={product.category}
-                onBlur={(e) => updateProduct(product.id, { category: e.target.value })}
-              />
-            </TableCell>
-            <TableCell>
-              <Button
-                variant="destructive"
-                size="icon"
-                onClick={() => deleteProduct(product.id)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </TableCell>
+    <>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Image</TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead>Description</TableHead>
+            <TableHead>Price</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {products.map((product) => (
+            <TableRow key={product.id}>
+              <TableCell>
+                <img
+                  src={product.image_url}
+                  alt={product.name}
+                  className="w-16 h-16 object-cover rounded"
+                />
+              </TableCell>
+              <TableCell>{product.name}</TableCell>
+              <TableCell>{product.description}</TableCell>
+              <TableCell>${product.base_price.toFixed(2)}</TableCell>
+              <TableCell>{product.category}</TableCell>
+              <TableCell className="space-x-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleEdit(product)}
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleDelete(product.id)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      <EditProductDialog
+        product={selectedProduct}
+        isOpen={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        onUpdate={onUpdate}
+      />
+    </>
   )
 }
