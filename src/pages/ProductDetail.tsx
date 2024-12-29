@@ -2,7 +2,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Product, ArtworkWithStudent } from "@/types/database";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useCart } from "@/contexts/CartContext";
 import { ProductInfo } from "@/components/product/ProductInfo";
@@ -13,9 +13,18 @@ const ProductDetail = () => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const artworkId = searchParams.get('artworkId');
+  const source = searchParams.get('source') || 'direct';
   const { toast } = useToast();
   const { addItem } = useCart();
   const [selectedArtwork, setSelectedArtwork] = useState<string | null>(artworkId || null);
+
+  useEffect(() => {
+    console.log('ProductDetail: Initialized with:', {
+      productId: id,
+      artworkId,
+      source,
+    });
+  }, [id, artworkId, source]);
 
   const { data: product, isLoading: productLoading } = useQuery({
     queryKey: ['product', id],
@@ -105,7 +114,6 @@ const ProductDetail = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Product Preview - Takes up 7 columns on large screens */}
         <div className="lg:col-span-7">
           <ProductPreview 
             product={product} 
@@ -113,7 +121,6 @@ const ProductDetail = () => {
           />
         </div>
         
-        {/* Product Info - Takes up 5 columns on large screens */}
         <div className="lg:col-span-5 space-y-8">
           <ProductInfo 
             product={product}
