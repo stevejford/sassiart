@@ -15,6 +15,7 @@ export type Database = {
           description: string | null
           id: string
           image_url: string
+          is_private: boolean | null
           student_id: string
           title: string
         }
@@ -23,6 +24,7 @@ export type Database = {
           description?: string | null
           id?: string
           image_url: string
+          is_private?: boolean | null
           student_id: string
           title: string
         }
@@ -31,6 +33,7 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string
+          is_private?: boolean | null
           student_id?: string
           title?: string
         }
@@ -162,7 +165,9 @@ export type Database = {
           description: string | null
           id: string
           image_url: string
+          is_popular: boolean | null
           name: string
+          total_sales: number | null
         }
         Insert: {
           base_price: number
@@ -172,7 +177,9 @@ export type Database = {
           description?: string | null
           id?: string
           image_url: string
+          is_popular?: boolean | null
           name: string
+          total_sales?: number | null
         }
         Update: {
           base_price?: number
@@ -182,7 +189,9 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string
+          is_popular?: boolean | null
           name?: string
+          total_sales?: number | null
         }
         Relationships: [
           {

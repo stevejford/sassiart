@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Switch } from "@/components/ui/switch"
+import { ImageUpload } from "../artwork/ImageUpload"
 import { Product } from "@/types/database"
 import { toast } from "sonner"
 import { supabase } from "@/integrations/supabase/client"
-import { ImageUpload } from "../artwork/ImageUpload"
 
 interface EditProductDialogProps {
   product: Product | null
@@ -28,6 +29,7 @@ export function EditProductDialog({
     base_price: product?.base_price || 0,
     category: product?.category || "",
     image_url: product?.image_url || "",
+    is_popular: product?.is_popular || false,
   })
 
   const handleImageUpload = (url: string) => {
@@ -46,6 +48,7 @@ export function EditProductDialog({
           base_price: form.base_price,
           category: form.category,
           image_url: form.image_url,
+          is_popular: form.is_popular,
         })
         .eq("id", product.id)
 
@@ -100,10 +103,30 @@ export function EditProductDialog({
               onChange={(e) => setForm({ ...form, category: e.target.value })}
             />
           </div>
-          <ImageUpload 
-            currentImage={form.image_url} 
-            onUpload={handleImageUpload} 
-          />
+          <div className="space-y-2">
+            <Label htmlFor="popular">Popular Product</Label>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="popular"
+                checked={form.is_popular}
+                onCheckedChange={(checked) => setForm({ ...form, is_popular: checked })}
+              />
+              <span className="text-sm text-muted-foreground">
+                Feature this product in the shop
+              </span>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Current Image</Label>
+            {form.image_url && (
+              <img
+                src={form.image_url}
+                alt={form.name}
+                className="w-32 h-32 object-cover rounded-lg"
+              />
+            )}
+            <ImageUpload onUpload={handleImageUpload} />
+          </div>
           <Button onClick={handleUpdate} className="w-full">
             Save Changes
           </Button>

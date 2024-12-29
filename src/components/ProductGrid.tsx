@@ -29,6 +29,34 @@ export const ProductGrid = () => {
     },
   });
 
+  const { data: popularProducts } = useQuery({
+    queryKey: ['popular-products'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*, product_categories(name)')
+        .eq('is_popular', true)
+        .limit(3);
+      
+      if (error) throw error;
+      return data as Product[];
+    },
+  });
+
+  const { data: bestSellers } = useQuery({
+    queryKey: ['best-sellers'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*, product_categories(name)')
+        .order('total_sales', { ascending: false })
+        .limit(3);
+      
+      if (error) throw error;
+      return data as Product[];
+    },
+  });
+
   const { data: products, isLoading, error } = useQuery({
     queryKey: ['products', searchQuery, selectedCategory],
     queryFn: async () => {
@@ -60,45 +88,70 @@ export const ProductGrid = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row gap-4">
-        <Input
-          placeholder="Search products..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="max-w-sm"
-        />
-        <Select
-          value={selectedCategory}
-          onValueChange={setSelectedCategory}
-        >
-          <SelectTrigger className="max-w-[200px]">
-            <SelectValue placeholder="All categories" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All categories</SelectItem>
-            {categories?.map((category) => (
-              <SelectItem key={category.id} value={category.id}>
-                {category.name}
-              </SelectItem>
+    <div className="space-y-12">
+      {popularProducts && popularProducts.length > 0 && (
+        <div>
+          <h2 className="text-2xl font-serif font-bold mb-6">Popular Products</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {popularProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
             ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-[300px] bg-gray-100 animate-pulse rounded-lg" />
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products?.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          </div>
         </div>
       )}
+
+      {bestSellers && bestSellers.length > 0 && (
+        <div>
+          <h2 className="text-2xl font-serif font-bold mb-6">Best Sellers</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {bestSellers.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div>
+        <h2 className="text-2xl font-serif font-bold mb-6">All Products</h2>
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <Input
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="max-w-sm"
+          />
+          <Select
+            value={selectedCategory}
+            onValueChange={setSelectedCategory}
+          >
+            <SelectTrigger className="max-w-[200px]">
+              <SelectValue placeholder="All categories" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All categories</SelectItem>
+              {categories?.map((category) => (
+                <SelectItem key={category.id} value={category.id}>
+                  {category.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-[300px] bg-gray-100 animate-pulse rounded-lg" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {products?.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

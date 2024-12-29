@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Switch } from "@/components/ui/switch"
 import { ImageUpload } from "./ImageUpload"
 import { ArtworkWithStudent } from "@/types/database"
 import { toast } from "sonner"
@@ -26,6 +27,7 @@ export function EditArtworkDialog({
     title: artwork?.title || "",
     description: artwork?.description || "",
     image_url: artwork?.image_url || "",
+    is_private: artwork?.is_private || false,
   })
 
   const handleImageUpload = (url: string) => {
@@ -42,6 +44,7 @@ export function EditArtworkDialog({
           title: form.title,
           description: form.description,
           image_url: form.image_url,
+          is_private: form.is_private,
         })
         .eq("id", artwork.id)
 
@@ -79,10 +82,30 @@ export function EditArtworkDialog({
               onChange={(e) => setForm({ ...form, description: e.target.value })}
             />
           </div>
-          <ImageUpload 
-            currentImage={form.image_url} 
-            onUpload={handleImageUpload} 
-          />
+          <div className="space-y-2">
+            <Label htmlFor="privacy">Private Artwork</Label>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="privacy"
+                checked={form.is_private}
+                onCheckedChange={(checked) => setForm({ ...form, is_private: checked })}
+              />
+              <span className="text-sm text-muted-foreground">
+                Only visible to you and admins
+              </span>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Current Image</Label>
+            {form.image_url && (
+              <img
+                src={form.image_url}
+                alt={form.title}
+                className="w-32 h-32 object-cover rounded-lg"
+              />
+            )}
+            <ImageUpload onUpload={handleImageUpload} />
+          </div>
           <Button onClick={handleUpdate} className="w-full">
             Save Changes
           </Button>
