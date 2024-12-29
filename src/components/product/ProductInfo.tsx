@@ -1,8 +1,9 @@
 import { Product } from "@/types/database";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { ShoppingCart, CreditCard, ArrowLeft } from "lucide-react";
+import { ShoppingCart, ArrowLeft, CreditCard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 interface ProductInfoProps {
   product: Product;
@@ -20,8 +21,12 @@ export const ProductInfo = ({
   const navigate = useNavigate();
 
   const handleAddToCart = () => {
+    if (!isArtworkSelected) {
+      toast.error("Please select artwork first");
+      return;
+    }
     onAddToCart();
-    // Show success message or handle any additional logic
+    toast.success("Added to cart!");
   };
 
   return (
@@ -56,7 +61,7 @@ export const ProductInfo = ({
             <Button
               variant="outline"
               size="lg"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/gallery')}
               className="w-full"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />

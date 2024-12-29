@@ -23,21 +23,38 @@ export const ProductPreview = ({
               className="w-full h-full object-contain"
             />
             
+            {/* Artwork overlay */}
+            {selectedArtwork && (
+              <div className="absolute inset-0 flex items-center justify-center p-4">
+                <img
+                  src={selectedArtwork.image_url}
+                  alt={selectedArtwork.title}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            )}
+            
             {/* Info overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent p-4 text-white flex flex-col justify-end">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent p-6 text-white flex flex-col justify-end">
               {selectedArtwork ? (
                 <>
-                  <p className="text-sm text-white/90 mb-1">by {selectedArtwork.student.name}</p>
-                  <h3 className="text-lg font-medium mb-1">{selectedArtwork.title}</h3>
+                  <p className="text-sm font-medium text-white/90 mb-1">
+                    by {selectedArtwork.student.name}
+                  </p>
+                  <h3 className="text-xl font-bold mb-2">{selectedArtwork.title}</h3>
                   {selectedArtwork.description && (
-                    <p className="text-sm text-white/80 line-clamp-2">{selectedArtwork.description}</p>
+                    <p className="text-sm text-white/80 line-clamp-2">
+                      {selectedArtwork.description}
+                    </p>
                   )}
                 </>
               ) : (
                 <>
-                  <h3 className="text-lg font-medium mb-1">{product.name}</h3>
+                  <h3 className="text-xl font-bold mb-2">{product.name}</h3>
                   {product.description && (
-                    <p className="text-sm text-white/80 line-clamp-2">{product.description}</p>
+                    <p className="text-sm text-white/80 line-clamp-2">
+                      {product.description}
+                    </p>
                   )}
                 </>
               )}
