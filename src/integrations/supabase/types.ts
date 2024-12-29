@@ -198,22 +198,31 @@ export type Database = {
         Row: {
           created_at: string
           email: string
+          featured_until: string | null
           id: string
           is_admin: boolean | null
+          is_featured: boolean | null
+          is_gallery_public: boolean | null
           name: string
         }
         Insert: {
           created_at?: string
           email: string
+          featured_until?: string | null
           id?: string
           is_admin?: boolean | null
+          is_featured?: boolean | null
+          is_gallery_public?: boolean | null
           name: string
         }
         Update: {
           created_at?: string
           email?: string
+          featured_until?: string | null
           id?: string
           is_admin?: boolean | null
+          is_featured?: boolean | null
+          is_gallery_public?: boolean | null
           name?: string
         }
         Relationships: []
