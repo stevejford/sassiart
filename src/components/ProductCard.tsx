@@ -4,7 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { Product } from "@/types/database";
 
 interface ProductCardProps {
-  product: Product;
+  product: Product & {
+    product_categories: {
+      name: string;
+    } | null;
+  };
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
@@ -24,7 +28,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       <CardFooter className="flex flex-col items-start gap-2 p-4">
         <div className="flex flex-col">
           <h3 className="font-serif text-lg font-medium">{product.name}</h3>
-          <p className="text-sm text-muted-foreground">{product.category}</p>
+          <p className="text-sm text-muted-foreground">
+            {product.product_categories?.name || product.category}
+          </p>
         </div>
         <div className="flex items-center justify-between w-full">
           <span className="font-medium">${product.base_price.toFixed(2)}</span>
