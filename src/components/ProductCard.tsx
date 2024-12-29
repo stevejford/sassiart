@@ -5,10 +5,20 @@ import { Product } from "@/types/database";
 
 interface ProductCardProps {
   product: Product;
+  onClick?: () => void; // Make onClick optional
 }
 
-export const ProductCard = ({ product }: ProductCardProps) => {
+export const ProductCard = ({ product, onClick }: ProductCardProps) => {
   const navigate = useNavigate();
+
+  // Use onClick if provided, otherwise use default navigation
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      navigate(`/product/${product.id}`);
+    }
+  };
 
   return (
     <Card className="overflow-hidden group animate-fadeIn">
@@ -32,7 +42,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           <span className="font-medium">${product.base_price.toFixed(2)}</span>
           <Button 
             variant="secondary"
-            onClick={() => navigate(`/product/${product.id}`)}
+            onClick={handleClick}
           >
             Customize
           </Button>
