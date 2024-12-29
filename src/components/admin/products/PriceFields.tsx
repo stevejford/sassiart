@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Product } from "@/types/database"
 import { useState, useEffect } from "react"
 
@@ -25,25 +26,37 @@ export const PriceFields = ({ product, onUpdate }: PriceFieldsProps) => {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
+    <div className="space-y-4 border rounded-lg p-4 bg-muted/30">
+      <div>
+        <Label htmlFor="basePrice">Base Price ($)</Label>
         <Input
+          id="basePrice"
           type="number"
-          placeholder="Base Price"
+          placeholder="Enter base price"
           value={basePrice}
           onChange={(e) => handleBasePriceChange(parseFloat(e.target.value))}
+          className="mt-1.5"
         />
       </div>
-      <div className="space-y-2">
+      <div>
+        <Label htmlFor="markup">Profit Margin (%)</Label>
         <Input
+          id="markup"
           type="number"
-          placeholder="Markup %"
+          placeholder="Enter margin percentage"
           value={markup}
           onChange={(e) => setMarkup(parseFloat(e.target.value))}
+          className="mt-1.5"
         />
       </div>
-      <div className="text-sm text-muted-foreground">
-        Total Price: ${calculateTotalPrice(basePrice, markup).toFixed(2)}
+      <div className="pt-2 border-t">
+        <div className="text-sm font-medium">Final Price</div>
+        <div className="text-2xl font-bold text-primary">
+          ${calculateTotalPrice(basePrice, markup).toFixed(2)}
+        </div>
+        <div className="text-xs text-muted-foreground mt-1">
+          Includes {markup}% profit margin
+        </div>
       </div>
     </div>
   )

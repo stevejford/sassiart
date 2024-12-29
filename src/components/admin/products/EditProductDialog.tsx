@@ -74,19 +74,30 @@ export function EditProductDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Edit Product</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-            />
+        <div className="grid gap-6 py-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Product Name</Label>
+              <Input
+                id="name"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="category">Category</Label>
+              <Input
+                id="category"
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+              />
+            </div>
           </div>
+          
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
             <Textarea
@@ -95,33 +106,28 @@ export function EditProductDialog({
               onChange={(e) => setForm({ ...form, description: e.target.value })}
             />
           </div>
+
           <div className="space-y-2">
-            <Label>Pricing</Label>
+            <Label>Product Pricing</Label>
             <PriceFields product={product} onUpdate={handleUpdate} />
           </div>
+
           <div className="space-y-2">
-            <Label htmlFor="category">Category</Label>
-            <Input
-              id="category"
-              value={form.category}
-              onChange={(e) => setForm({ ...form, category: e.target.value })}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="popular">Popular Product</Label>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="popular">Popular Product</Label>
               <Switch
                 id="popular"
                 checked={form.is_popular}
                 onCheckedChange={(checked) => setForm({ ...form, is_popular: checked })}
               />
-              <span className="text-sm text-muted-foreground">
-                Feature this product in the shop
-              </span>
             </div>
+            <p className="text-sm text-muted-foreground">
+              Feature this product in the shop
+            </p>
           </div>
+
           <div className="space-y-2">
-            <Label>Current Image</Label>
+            <Label>Product Image</Label>
             {form.image_url && (
               <img
                 src={form.image_url}
@@ -131,6 +137,7 @@ export function EditProductDialog({
             )}
             <ImageUpload onUpload={handleImageUpload} />
           </div>
+
           <Button onClick={() => handleUpdate()} className="w-full">
             Save Changes
           </Button>
